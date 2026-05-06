@@ -22,7 +22,7 @@ const resources = {
       "nav.about": "About Us",
       "nav.gallery": "Gallery",
       "nav.contact": "Contact Us",
-      "nav.carRental": "Car Rental",
+      "nav.carRental": "Vehicle Rental",
 
       // Homepage
       "hero.companyName": "OLTRE TOUR TRAVEL AGENCY",
@@ -174,20 +174,20 @@ const resources = {
       // Services
       "services.title": "Our Services",
       "services.carRental": "Car Rental Service",
-      "services.carRentalTitle": "Car Rental Services",
+      "services.carRentalTitle": "Vehicle Rental Services",
       "services.description":
         "Explore Turkey at your own pace with our reliable car rental service",
       "services.subtitle":
         "Explore Turkey at your own pace with our reliable and comfortable vehicles",
       "services.chooseVehicle": "Choose Your Perfect Vehicle",
       "services.chooseDescription":
-        "Whether you're traveling solo, with family, or in a group, we have the perfect vehicle for your Turkish adventure. All vehicles are well-maintained, insured, and ready for your journey.",
+        "Whether you're traveling solo, with family, or in a group, we have the perfect vehicle for your Turkish adventure. All vehicles are well-maintained, insured, and ready for your journey.A professional driver will be included to every booking.",
       "services.loading": "Loading rental cars...",
       "services.noAvailable": "No rental cars available at the moment.",
       "services.transmission": "Transmission",
       "services.fuelType": "Fuel Type",
       "services.doors": "Doors",
-      "services.features": "Features:",
+      "services.features": "Features",
       "services.startingFrom": "Starting from",
       "services.perDay": "/day",
       "services.or": "or",
@@ -414,13 +414,13 @@ const resources = {
         "Güvenilir ve konforlu araçlarımızla Türkiye'yi kendi hızınızda keşfedin",
       "services.chooseVehicle": "Mükemmel Aracınızı Seçin",
       "services.chooseDescription":
-        "İster yalnız, ister aile veya grup halinde seyahat edin, Türkiye maceranız için mükemmel araca sahibiz. Tüm araçlar bakımlı, sigortalı ve yolculuğunuz için hazır.",
+        "İster yalnız, ister aile veya grup halinde seyahat edin, Türkiye maceranız için mükemmel araca sahibiz. Tüm araçlar bakımlı, sigortalı ve yolculuğunuz için hazır. Her rezervasyona profesyonel bir sürücü dahildir.",
       "services.loading": "Kiralık araçlar yükleniyor...",
       "services.noAvailable": "Şu anda müsait kiralık araç bulunmamaktadır.",
       "services.transmission": "Vites",
       "services.fuelType": "Yakıt Türü",
       "services.doors": "Kapı",
-      "services.features": "Özellikler:",
+      "services.features": "Özellikler",
       "services.startingFrom": "Başlangıç fiyatı",
       "services.perDay": "/gün",
       "services.or": "veya",
@@ -562,6 +562,8 @@ const resources = {
         "Mit unserer 25-jährigen Erfahrung und unserem umfangreichen Servicenetzwerk sind wir hier, um Ihnen das beste Reiseerlebnis zu bieten.",
       "about.discoverServices": "Entdecken Sie unsere Dienstleistungen",
       "about.getInTouch": "Kontakt aufnehmen",
+      "services.chooseDescription":
+        "Egal ob Sie alleine, mit der Familie oder in einer Gruppe reisen, wir haben das perfekte Fahrzeug für Ihr Türkei-Abenteuer. Alle Fahrzeuge sind gut gewartet, versichert und für Ihre Reise bereit. Zu jeder Buchung ist ein professioneller Fahrer inbegriffen.",
       "whatsapp.contactUs": "Kontaktieren Sie uns",
     },
   },
@@ -659,6 +661,8 @@ const resources = {
         "Avec nos 25 ans d'expérience et notre large réseau de services, nous sommes là pour vous offrir la meilleure expérience de voyage.",
       "about.discoverServices": "Découvrez nos services",
       "about.getInTouch": "Nous contacter",
+      "services.chooseDescription":
+        "Que vous voyagiez seul, en famille ou en groupe, nous avons le véhicule parfait pour votre aventure turque. Tous les véhicules sont bien entretenus, assurés et prêts pour votre voyage. Un chauffeur professionnel est inclus dans chaque réservation.",
       "whatsapp.contactUs": "Contactez-nous",
     },
   },
@@ -757,6 +761,8 @@ const resources = {
         "Con nuestros 25 años de experiencia y amplia red de servicios, estamos aquí para ofrecerle la mejor experiencia de viaje.",
       "about.discoverServices": "Descubre nuestros servicios",
       "about.getInTouch": "Ponerse en contacto",
+      "services.chooseDescription":
+        "Ya sea que viaje solo, con familia o en grupo, tenemos el vehículo perfecto para su aventura turca. Todos los vehículos están bien mantenidos, asegurados y listos para su viaje. Se incluirá un conductor profesional en cada reserva.",
       "whatsapp.contactUs": "Contáctenos",
     },
   },
@@ -853,6 +859,8 @@ const resources = {
         "С нашим 25-летним опытом и широкой сетью услуг мы здесь, чтобы предложить вам лучший опыт путешествий.",
       "about.discoverServices": "Откройте наши услуги",
       "about.getInTouch": "Связаться с нами",
+      "services.chooseDescription":
+        "Путешествуете ли вы в одиночку, с семьёй или в группе, у нас есть идеальный автомобиль для вашего турецкого приключения. Все автомобили хорошо обслуживаются, застрахованы и готовы к вашему путешествию. К каждому бронированию прилагается профессиональный водитель.",
       "whatsapp.contactUs": "Свяжитесь с нами",
     },
   },
@@ -950,6 +958,8 @@ const resources = {
         "25年の経験と広範なサービスネットワークで、最高の旅行体験を提供するためにここにいます。",
       "about.discoverServices": "サービスを発見する",
       "about.getInTouch": "お問い合わせ",
+      "services.chooseDescription":
+        "一人旅でも、家族連れでも、グループでも、トルコの冒険に最適な車両をご用意しています。すべての車両は整備が行き届き、保険付きで、旅の準備が整っています。すべての予約にプロのドライバーが含まれます。",
       "whatsapp.contactUs": "お問い合わせ",
     },
   },

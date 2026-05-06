@@ -579,6 +579,23 @@ export function Admin() {
     }
   };
 
+  const handleRemoveCarImage = (imageUrl) => {
+    if (confirm("Are you sure you want to remove this image?")) {
+      const updated = (formData.images || []).filter((img) => img !== imageUrl);
+      setFormData({ ...formData, images: updated });
+    }
+  };
+
+  const handleCarImageDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const imgs = formData.images || [];
+    const oldIndex = imgs.indexOf(active.id);
+    const newIndex = imgs.indexOf(over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    setFormData({ ...formData, images: arrayMove(imgs, oldIndex, newIndex) });
+  };
+
   const handleCancel = () => {
     setEditingItem(null);
     setIsAdding(false);
@@ -984,17 +1001,19 @@ export function Admin() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex justify-between items-center">
-                      <div>
+                    <div className="flex justify-between items-center gap-4">
+                      <div className="min-w-0 flex-1">
                         <h3 className="text-xl font-bold text-gray-800">
                           {dest.name}
                         </h3>
-                        <p className="text-gray-600">{dest.description}</p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-gray-600 break-words">
+                          {dest.description}
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1 break-all">
                           Image: {dest.img}
                         </p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-shrink-0">
                         <button
                           onClick={() => handleEditDestination(dest)}
                           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
@@ -1656,67 +1675,6 @@ export function Admin() {
                     }
                     className="border p-3 rounded-lg col-span-2"
                   />
-                  <textarea
-                    placeholder="Description"
-                    value={formData.description || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    className="border p-3 rounded-lg col-span-2"
-                    rows="3"
-                  />
-
-                  <div className="col-span-2 grid grid-cols-3 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Transmission (e.g., Automatic)"
-                      value={formData.transmission || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          transmission: e.target.value,
-                        })
-                      }
-                      className="border p-3 rounded-lg"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Fuel Type (e.g., Diesel)"
-                      value={formData.fuel || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, fuel: e.target.value })
-                      }
-                      className="border p-3 rounded-lg"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Doors (e.g., 4 Doors)"
-                      value={formData.doors || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, doors: e.target.value })
-                      }
-                      className="border p-3 rounded-lg"
-                    />
-                  </div>
-
-                  <input
-                    type="text"
-                    placeholder="Daily Price (e.g., €55)"
-                    value={formData.daily_price || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, daily_price: e.target.value })
-                    }
-                    className="border p-3 rounded-lg"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Weekly Price (e.g., €330)"
-                    value={formData.weekly_price || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, weekly_price: e.target.value })
-                    }
-                    className="border p-3 rounded-lg"
-                  />
                   <input
                     type="text"
                     placeholder="Color (e.g., blue, red)"
@@ -1741,9 +1699,7 @@ export function Admin() {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          features: e.target.value
-                            .split("\n")
-                            .filter((f) => f.trim()),
+                          features: e.target.value.split("\n"),
                         })
                       }
                       className="border p-3 rounded-lg w-full"
@@ -1752,7 +1708,12 @@ export function Admin() {
                   </div>
 
                   <div className="col-span-2">
-                    <label className="block mb-2 font-semibold">Images</label>
+                    <label className="block mb-2 font-semibold">
+                      Images{" "}
+                      <span className="text-sm text-gray-500 font-normal">
+                        (drag to reorder — first image is the main photo)
+                      </span>
+                    </label>
                     <input
                       type="file"
                       multiple
@@ -1762,6 +1723,57 @@ export function Admin() {
                       }
                       className="border p-3 rounded-lg w-full"
                     />
+                    {imageFiles.length > 0 && (
+                      <div className="mt-3">
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={(event) => {
+                            const { active, over } = event;
+                            if (!over || active.id === over.id) return;
+                            const oldIdx = imageFiles.findIndex(
+                              (f) => f.name + f.size === active.id,
+                            );
+                            const newIdx = imageFiles.findIndex(
+                              (f) => f.name + f.size === over.id,
+                            );
+                            if (oldIdx < 0 || newIdx < 0) return;
+                            setImageFiles(
+                              arrayMove(imageFiles, oldIdx, newIdx),
+                            );
+                          }}
+                        >
+                          <SortableContext
+                            items={imageFiles.map((f) => f.name + f.size)}
+                            strategy={rectSortingStrategy}
+                          >
+                            <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                              {imageFiles.map((file, idx) => (
+                                <div
+                                  key={file.name + file.size}
+                                  className="relative"
+                                >
+                                  {idx === 0 && (
+                                    <span className="absolute top-1 left-1 z-10 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded font-semibold">
+                                      Main
+                                    </span>
+                                  )}
+                                  <SortableImage
+                                    id={file.name + file.size}
+                                    src={URL.createObjectURL(file)}
+                                    onRemove={() =>
+                                      setImageFiles(
+                                        imageFiles.filter((_, i) => i !== idx),
+                                      )
+                                    }
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </SortableContext>
+                        </DndContext>
+                      </div>
+                    )}
                     {uploading && (
                       <p className="text-blue-500 mt-2">Uploading...</p>
                     )}
@@ -1808,79 +1820,6 @@ export function Admin() {
                           }
                           className="border p-3 rounded-lg col-span-2"
                         />
-                        <textarea
-                          placeholder="Description"
-                          value={formData.description || ""}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              description: e.target.value,
-                            })
-                          }
-                          className="border p-3 rounded-lg col-span-2"
-                          rows="3"
-                        />
-
-                        <div className="col-span-2 grid grid-cols-3 gap-4">
-                          <input
-                            type="text"
-                            placeholder="Transmission"
-                            value={formData.transmission || ""}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                transmission: e.target.value,
-                              })
-                            }
-                            className="border p-3 rounded-lg"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Fuel Type"
-                            value={formData.fuel || ""}
-                            onChange={(e) =>
-                              setFormData({ ...formData, fuel: e.target.value })
-                            }
-                            className="border p-3 rounded-lg"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Doors"
-                            value={formData.doors || ""}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                doors: e.target.value,
-                              })
-                            }
-                            className="border p-3 rounded-lg"
-                          />
-                        </div>
-
-                        <input
-                          type="text"
-                          placeholder="Daily Price"
-                          value={formData.daily_price || ""}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              daily_price: e.target.value,
-                            })
-                          }
-                          className="border p-3 rounded-lg"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Weekly Price"
-                          value={formData.weekly_price || ""}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              weekly_price: e.target.value,
-                            })
-                          }
-                          className="border p-3 rounded-lg"
-                        />
                         <input
                           type="text"
                           placeholder="Color"
@@ -1904,9 +1843,7 @@ export function Admin() {
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
-                                features: e.target.value
-                                  .split("\n")
-                                  .filter((f) => f.trim()),
+                                features: e.target.value.split("\n"),
                               })
                             }
                             className="border p-3 rounded-lg w-full"
@@ -1916,6 +1853,45 @@ export function Admin() {
 
                         <div className="col-span-2">
                           <label className="block mb-2 font-semibold">
+                            Images{" "}
+                            <span className="text-sm text-gray-500 font-normal">
+                              (drag to reorder — first image is the main photo)
+                            </span>
+                          </label>
+                          {formData.images && formData.images.length > 0 ? (
+                            <DndContext
+                              sensors={sensors}
+                              collisionDetection={closestCenter}
+                              onDragEnd={handleCarImageDragEnd}
+                            >
+                              <SortableContext
+                                items={formData.images}
+                                strategy={rectSortingStrategy}
+                              >
+                                <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-3">
+                                  {formData.images.map((img, idx) => (
+                                    <div key={img} className="relative">
+                                      {idx === 0 && (
+                                        <span className="absolute top-1 left-1 z-10 bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded font-semibold">
+                                          Main
+                                        </span>
+                                      )}
+                                      <SortableImage
+                                        id={img}
+                                        src={img}
+                                        onRemove={handleRemoveCarImage}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </SortableContext>
+                            </DndContext>
+                          ) : (
+                            <p className="text-sm text-gray-500 mb-3">
+                              No images uploaded yet
+                            </p>
+                          )}
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
                             Add More Images
                           </label>
                           <input
@@ -1927,15 +1903,13 @@ export function Admin() {
                             }
                             className="border p-3 rounded-lg w-full"
                           />
+                          {imageFiles.length > 0 && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              {imageFiles.length} new file(s) selected
+                            </p>
+                          )}
                           {uploading && (
                             <p className="text-blue-500 mt-2">Uploading...</p>
-                          )}
-                          {formData.images && formData.images.length > 0 && (
-                            <div className="mt-2">
-                              <p className="text-sm text-gray-600">
-                                Current images: {formData.images.length}
-                              </p>
-                            </div>
                           )}
                         </div>
                       </div>
