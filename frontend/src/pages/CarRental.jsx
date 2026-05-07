@@ -14,6 +14,7 @@ export function CarRental() {
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState({});
   const [lightbox, setLightbox] = useState(null); // { images, index }
+  const [quoteWhatsapp, setQuoteWhatsapp] = useState("905362238340");
   const navigate = useNavigate();
 
   const openLightbox = (images, index) => setLightbox({ images, index });
@@ -79,6 +80,12 @@ export function CarRental() {
       console.error("Error loading rental cars:", error);
     } finally {
       setLoading(false);
+    }
+    try {
+      const setting = await api.getSiteSetting("quote_whatsapp");
+      if (setting?.value) setQuoteWhatsapp(setting.value);
+    } catch (error) {
+      console.error("Error loading quote whatsapp:", error);
     }
   };
 
@@ -303,12 +310,14 @@ export function CarRental() {
                           </div>
                         </div>
                       </div>
-                      <Link
-                        to="/contact#contact"
+                      <button
+                        onClick={() =>
+                          window.open(`https://wa.me/${quoteWhatsapp}?text=${encodeURIComponent("")}`, "_blank")
+                        }
                         className="block w-2/4 mx-auto bg-[rgb(52,63,69)] text-white py-4 rounded-3xl hover:bg-white cursor-pointer hover:text-[rgb(52,63,69)] transition duration-300 border-1 font-bold text-center transition-all shadow-lg hover:shadow-xl"
                       >
                         <p>Request Quote</p>
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>

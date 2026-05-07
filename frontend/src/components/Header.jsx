@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "../services/api";
 import { useMenu } from "../contexts/MenuContext";
+import { useContactSettings } from "../contexts/ContactSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const { t } = useTranslation();
+  const { currentPhone } = useContactSettings();
   const [isVisible, setIsVisible] = useState(true);
   const [isOnTop, setIsOnTop] = useState(true);
   const [destinations, setDestinations] = useState([]);
@@ -104,7 +106,7 @@ export function Header() {
           src="/icons8-phone-24.png"
           alt="phone"
         ></img>
-        <p className="text-white">+90 536 223 83 40 | oltretour@hotmail.com</p>
+        <p className="text-white">{currentPhone} | oltretour@hotmail.com</p>
       </div>
       {/* Main Header */}
       <div

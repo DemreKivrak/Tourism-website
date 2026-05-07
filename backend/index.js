@@ -225,15 +225,49 @@ async function initializeDatabase() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
-    //kişiler table
+    // Kişiler table
     await client.query(`
-        CREATE TABLE IF NOT EXISTS people_list (
-          id SERIAL PRIMARY KEY, 
-          name VARCHAR(255) NOT NULL,
-          phone VARCHAR(50),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) 
-      `);
+      CREATE TABLE IF NOT EXISTS people_list (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        phone VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Contact settings table (phone numbers per language)
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS contact_settings (
+        language VARCHAR(10) PRIMARY KEY,
+        phone_display VARCHAR(100) NOT NULL DEFAULT '+90 536 223 83 40',
+        whatsapp_number VARCHAR(50) NOT NULL DEFAULT '905362238340',
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Insert default contact settings for all supported languages if not exist
+    const languages = ['en', 'tr', 'de', 'fr', 'es', 'ru', 'ja'];
+    for (const lang of languages) {
+      await client.query(`
+        INSERT INTO contact_settings (language, phone_display, whatsapp_number)
+        VALUES ($1, '+90 536 223 83 40', '905362238340')
+        ON CONFLICT (language) DO NOTHING
+      `, [lang]);
+    }
+
+    // General site settings table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key VARCHAR(100) PRIMARY KEY,
+        value TEXT NOT NULL DEFAULT '',
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    await client.query(`
+      INSERT INTO site_settings (key, value)
+      VALUES ('quote_whatsapp', '905362238340')
+      ON CONFLICT (key) DO NOTHING
+    `);
 
     await client.query("COMMIT");
     console.log("✅ Database tables initialized");
@@ -1064,6 +1098,89 @@ app.delete("/api/gallery/:id", verifyToken, async (req, res) => {
 });
 
 // ===== UTILITY ENDPOINTS =====
+
+// ===== CONTACT SETTINGS ENDPOINTS =====
+
+// Get all contact settings (public)
+app.get("/api/contact-settings", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM contact_settings ORDER BY language ASC",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update contact settings for a language (admin only)
+app.put("/api/contact-settings/:language", verifyToken, async (req, res) => {
+  const { language } = req.params;
+  const { phone_display, whatsapp_number } = req.body;
+
+  if (!phone_display || !whatsapp_number) {
+    return res
+      .status(400)
+      .json({ error: "phone_display and whatsapp_number are required" });
+  }
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO contact_settings (language, phone_display, whatsapp_number, updated_at)
+       VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+       ON CONFLICT (language) DO UPDATE
+       SET phone_display = $2, whatsapp_number = $3, updated_at = CURRENT_TIMESTAMP
+       RETURNING *`,
+      [language, phone_display, whatsapp_number],
+    );
+    await logActivity(
+      req.user.id,
+      "UPDATE_CONTACT_SETTINGS",
+      `Updated contact for language: ${language}`,
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ===== SITE SETTINGS ENDPOINTS =====
+
+// Get a site setting by key (public)
+app.get("/api/site-settings/:key", async (req, res) => {
+  const { key } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT value FROM site_settings WHERE key = $1",
+      [key]
+    );
+    if (result.rows.length === 0) return res.status(404).json({ error: "Setting not found" });
+    res.json({ key, value: result.rows[0].value });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update a site setting (admin only)
+app.put("/api/site-settings/:key", verifyToken, async (req, res) => {
+  const { key } = req.params;
+  const { value } = req.body;
+  if (!value && value !== "") return res.status(400).json({ error: "value is required" });
+  try {
+    const result = await pool.query(
+      `INSERT INTO site_settings (key, value, updated_at)
+       VALUES ($1, $2, CURRENT_TIMESTAMP)
+       ON CONFLICT (key) DO UPDATE
+       SET value = $2, updated_at = CURRENT_TIMESTAMP
+       RETURNING *`,
+      [key, value]
+    );
+    await logActivity(req.user.id, "UPDATE_SITE_SETTINGS", `Updated site setting: ${key}`);
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ===== PEOPLE LIST ENDPOINTS =====
 

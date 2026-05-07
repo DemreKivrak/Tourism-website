@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { MenuProvider } from "./contexts/MenuContext";
+import { ContactSettingsProvider } from "./contexts/ContactSettingsContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { Homepage } from "./pages/homepage/Homepage.jsx";
@@ -21,8 +22,9 @@ function App() {
     <Router>
       <ScrollToTop />
       <AuthProvider>
-        <MenuProvider>
-          <Routes>
+        <ContactSettingsProvider>
+          <MenuProvider>
+            <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/tours" element={<Tours />} />
             <Route path="/destinations" element={<Destinations />} />
@@ -42,7 +44,8 @@ function App() {
               }
             />
           </Routes>
-        </MenuProvider>
+          </MenuProvider>
+        </ContactSettingsProvider>
       </AuthProvider>
     </Router>
   );

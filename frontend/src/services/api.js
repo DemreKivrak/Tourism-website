@@ -268,6 +268,40 @@ export const api = {
     return response.json();
   },
 
+  // Contact Settings
+  getContactSettings: async () => {
+    const response = await fetch(`${API_URL}/contact-settings`);
+    if (!response.ok) throw new Error("Failed to fetch contact settings");
+    return response.json();
+  },
+
+  updateContactSettings: async (language, data) => {
+    const response = await fetch(`${API_URL}/contact-settings/${language}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error("Failed to update contact settings");
+    return response.json();
+  },
+
+  // Site Settings
+  getSiteSetting: async (key) => {
+    const response = await fetch(`${API_URL}/site-settings/${key}`);
+    if (!response.ok) throw new Error("Failed to fetch site setting");
+    return response.json();
+  },
+
+  updateSiteSetting: async (key, value) => {
+    const response = await fetch(`${API_URL}/site-settings/${key}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ value }),
+    });
+    if (!response.ok) throw new Error("Failed to update site setting");
+    return response.json();
+  },
+
   // People List
   getPeople: async () => {
     const response = await fetch(`${API_URL}/people`, {

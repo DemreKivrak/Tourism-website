@@ -4,10 +4,12 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Footer } from "../components/Footer";
 import { WhatsappContact } from "../components/WhatsappContact";
+import { useContactSettings } from "../contexts/ContactSettingsContext";
 
 export function Contact() {
   const { t } = useTranslation();
   const location = useLocation();
+  const { currentPhone, currentWhatsapp } = useContactSettings();
   const yandexLink =
     "https://yandex.com.tr/maps/org/oltre_turizm/1254953363/?ll=28.986200%2C41.043300&z=14";
 
@@ -75,10 +77,10 @@ export function Contact() {
                 {t("contact.phone").toUpperCase()}
               </h3>
               <a
-                href="tel:+905322315758"
+                href={`tel:+${currentWhatsapp}`}
                 className="text-2xl font-semibold text-green-400 hover:text-green-700 transition"
               >
-                +90 536 223 83 40
+                {currentPhone}
               </a>
               <p className="text-sm text-gray-500 mt-2">
                 {t("contact.available")}

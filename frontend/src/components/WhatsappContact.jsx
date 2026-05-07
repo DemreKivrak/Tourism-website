@@ -2,16 +2,17 @@ import { useMenu } from "../contexts/MenuContext";
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import { useContactSettings } from "../contexts/ContactSettingsContext";
 
 export function WhatsappContact() {
   const { mobileMenuOpen } = useMenu();
   const { t } = useTranslation();
+  const { currentWhatsapp } = useContactSettings();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const handleWhatsApp = () => {
-    const phone = "905362238340";
     const message = encodeURIComponent("");
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    window.open(`https://wa.me/${currentWhatsapp}?text=${message}`, "_blank");
   };
 
   const imgRef = useRef(null);
