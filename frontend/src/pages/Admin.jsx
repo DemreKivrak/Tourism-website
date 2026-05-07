@@ -2695,6 +2695,7 @@ export function Admin() {
             <h2 className="text-2xl font-bold text-gray-800">
               Contact List ({people.length})
             </h2>
+            {isSuperAdmin && (
             <button
               onClick={() => {
                 setIsAddingPerson(true);
@@ -2704,10 +2705,11 @@ export function Admin() {
             >
               <span className="text-xl">+</span> Add Person
             </button>
+            )}
           </div>
 
           {/* Add Form */}
-          {isAddingPerson && (
+          {isAddingPerson && isSuperAdmin && (
             <div className="bg-gray-50 rounded-lg p-4 mb-6 flex flex-wrap gap-4 items-end">
               <div className="flex-1 min-w-[180px]">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -2763,7 +2765,7 @@ export function Admin() {
                   <th className="px-4 py-3 text-left">Name</th>
                   <th className="px-4 py-3 text-left">Phone</th>
                   <th className="px-4 py-3 text-left">Date Added</th>
-                  <th className="px-4 py-3 text-left">Actions</th>
+                  {isSuperAdmin && <th className="px-4 py-3 text-left">Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -2807,6 +2809,7 @@ export function Admin() {
                     <td className="px-4 py-3 text-gray-500">
                       {new Date(person.created_at).toLocaleDateString()}
                     </td>
+                    {isSuperAdmin && (
                     <td className="px-4 py-3">
                       {editingPerson === person.id ? (
                         <div className="flex gap-2">
@@ -2840,6 +2843,7 @@ export function Admin() {
                         </div>
                       )}
                     </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -2853,7 +2857,7 @@ export function Admin() {
           )}
 
           {/* Phone Settings by Language */}
-          <div className="mt-10">
+          {isSuperAdmin && <div className="mt-10">
             <h3 className="text-xl font-bold text-gray-800 mb-4">
               Phone Settings by Language
             </h3>
@@ -2926,10 +2930,10 @@ export function Admin() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div>}
 
           {/* Quote WhatsApp (Vehicle Rental - Request Quote button) */}
-          <div className="mt-10">
+          {isSuperAdmin && <div className="mt-10">
             <h3 className="text-xl font-bold text-gray-800 mb-1">
               Vehicle Rental — Request Quote Number
             </h3>
@@ -2976,7 +2980,7 @@ export function Admin() {
                 Save
               </button>
             </div>
-          </div>
+          </div>}
         </div>
       )}
 

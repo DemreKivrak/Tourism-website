@@ -1204,7 +1204,7 @@ app.put(
 // ===== PEOPLE LIST ENDPOINTS =====
 
 // Get all people
-app.get("/api/people", verifyToken, verifySuperAdmin, async (req, res) => {
+app.get("/api/people", verifyToken, async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT * FROM people_list ORDER BY created_at DESC",
