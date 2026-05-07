@@ -106,6 +106,7 @@ export function Header() {
           src="/icons8-phone-24.png"
           alt="phone"
         ></img>
+        <span className="text-white mr-1 text-sm">+</span>
         <p className="text-white">{currentPhone} | oltretour@hotmail.com</p>
       </div>
       {/* Main Header */}

@@ -25,25 +25,28 @@ function App() {
         <ContactSettingsProvider>
           <MenuProvider>
             <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/tours" element={<Tours />} />
-            <Route path="/destinations" element={<Destinations />} />
-            <Route path="/destinations/:id" element={<SelectedDestination />} />
-            <Route path="/tourpage/:id" element={<TourPage />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/car-rental" element={<CarRental />} />
-            <Route path="/galery" element={<Galery />} />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <Admin />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/tours" element={<Tours />} />
+              <Route path="/destinations" element={<Destinations />} />
+              <Route
+                path="/destinations/:id"
+                element={<SelectedDestination />}
+              />
+              <Route path="/tourpage/:id" element={<TourPage />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/car-rental" element={<CarRental />} />
+              <Route path="/galery" element={<Galery />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
           </MenuProvider>
         </ContactSettingsProvider>
       </AuthProvider>

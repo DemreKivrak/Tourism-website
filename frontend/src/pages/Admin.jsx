@@ -153,7 +153,10 @@ export function Admin() {
         const forms = {};
         settingsData.forEach((s) => {
           map[s.language] = s;
-          forms[s.language] = { phone_display: s.phone_display, whatsapp_number: s.whatsapp_number };
+          forms[s.language] = {
+            phone_display: s.phone_display,
+            whatsapp_number: s.whatsapp_number,
+          };
         });
         setContactSettings(map);
         setContactSettingsForms(forms);
@@ -742,7 +745,10 @@ export function Admin() {
     try {
       const form = contactSettingsForms[lang];
       await api.updateContactSettings(lang, form);
-      setContactSettings((prev) => ({ ...prev, [lang]: { ...prev[lang], ...form } }));
+      setContactSettings((prev) => ({
+        ...prev,
+        [lang]: { ...prev[lang], ...form },
+      }));
       alert(`${lang.toUpperCase()} phone settings saved.`);
     } catch (error) {
       alert(error.message);
@@ -2848,7 +2854,9 @@ export function Admin() {
 
           {/* Phone Settings by Language */}
           <div className="mt-10">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Phone Settings by Language</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Phone Settings by Language
+            </h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-100">
@@ -2861,18 +2869,21 @@ export function Admin() {
                 <tbody>
                   {["en", "tr", "de", "fr", "es", "ru", "ja"].map((lang) => (
                     <tr key={lang} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 font-bold uppercase text-gray-600">{lang}</td>
+                      <td className="px-4 py-3 font-bold uppercase text-gray-600">
+                        {lang}
+                      </td>
                       <td className="px-4 py-3">
                         <select
                           value={
                             people.find(
                               (p) =>
-                                p.phone === contactSettingsForms[lang]?.phone_display
+                                p.phone ===
+                                contactSettingsForms[lang]?.phone_display,
                             )?.id || ""
                           }
                           onChange={(e) => {
                             const person = people.find(
-                              (p) => String(p.id) === e.target.value
+                              (p) => String(p.id) === e.target.value,
                             );
                             if (!person) return;
                             const raw = (person.phone || "").replace(/\D/g, "");
@@ -2891,7 +2902,8 @@ export function Admin() {
                           </option>
                           {people.map((p) => (
                             <option key={p.id} value={p.id}>
-                              {p.name}{p.phone ? ` — ${p.phone}` : ""}
+                              {p.name}
+                              {p.phone ? ` — ${p.phone}` : ""}
                             </option>
                           ))}
                         </select>
@@ -2922,23 +2934,34 @@ export function Admin() {
               Vehicle Rental — Request Quote Number
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              Araç Kiralama sayfasındaki "Request Quote" butonuna atanacak WhatsApp numarası.
+              Araç Kiralama sayfasındaki "Request Quote" butonuna atanacak
+              WhatsApp numarası.
             </p>
             <div className="flex flex-wrap items-end gap-4">
               {people.length > 0 && (
                 <select
-                  value={people.find((p) => (p.phone || "").replace(/\D/g, "") === quoteWhatsapp)?.id || ""}
+                  value={
+                    people.find(
+                      (p) =>
+                        (p.phone || "").replace(/\D/g, "") === quoteWhatsapp,
+                    )?.id || ""
+                  }
                   onChange={(e) => {
-                    const person = people.find((p) => String(p.id) === e.target.value);
+                    const person = people.find(
+                      (p) => String(p.id) === e.target.value,
+                    );
                     if (!person) return;
                     setQuoteWhatsapp((person.phone || "").replace(/\D/g, ""));
                   }}
                   className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-400 outline-none text-gray-600 min-w-[220px]"
                 >
-                  <option value="" disabled>-- Kişi seç --</option>
+                  <option value="" disabled>
+                    -- Kişi seç --
+                  </option>
                   {people.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name}{p.phone ? ` — ${p.phone}` : ""}
+                      {p.name}
+                      {p.phone ? ` — ${p.phone}` : ""}
                     </option>
                   ))}
                 </select>

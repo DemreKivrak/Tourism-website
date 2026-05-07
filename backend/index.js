@@ -246,13 +246,16 @@ async function initializeDatabase() {
     `);
 
     // Insert default contact settings for all supported languages if not exist
-    const languages = ['en', 'tr', 'de', 'fr', 'es', 'ru', 'ja'];
+    const languages = ["en", "tr", "de", "fr", "es", "ru", "ja"];
     for (const lang of languages) {
-      await client.query(`
+      await client.query(
+        `
         INSERT INTO contact_settings (language, phone_display, whatsapp_number)
         VALUES ($1, '+90 536 223 83 40', '905362238340')
         ON CONFLICT (language) DO NOTHING
-      `, [lang]);
+      `,
+        [lang],
+      );
     }
 
     // General site settings table
@@ -1113,36 +1116,41 @@ app.get("/api/contact-settings", async (req, res) => {
   }
 });
 
-// Update contact settings for a language (admin only)
-app.put("/api/contact-settings/:language", verifyToken, async (req, res) => {
-  const { language } = req.params;
-  const { phone_display, whatsapp_number } = req.body;
+// Update contact settings for a language (super admin only)
+app.put(
+  "/api/contact-settings/:language",
+  verifyToken,
+  verifySuperAdmin,
+  async (req, res) => {
+    const { language } = req.params;
+    const { phone_display, whatsapp_number } = req.body;
 
-  if (!phone_display || !whatsapp_number) {
-    return res
-      .status(400)
-      .json({ error: "phone_display and whatsapp_number are required" });
-  }
+    if (!phone_display || !whatsapp_number) {
+      return res
+        .status(400)
+        .json({ error: "phone_display and whatsapp_number are required" });
+    }
 
-  try {
-    const result = await pool.query(
-      `INSERT INTO contact_settings (language, phone_display, whatsapp_number, updated_at)
+    try {
+      const result = await pool.query(
+        `INSERT INTO contact_settings (language, phone_display, whatsapp_number, updated_at)
        VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
        ON CONFLICT (language) DO UPDATE
        SET phone_display = $2, whatsapp_number = $3, updated_at = CURRENT_TIMESTAMP
        RETURNING *`,
-      [language, phone_display, whatsapp_number],
-    );
-    await logActivity(
-      req.user.id,
-      "UPDATE_CONTACT_SETTINGS",
-      `Updated contact for language: ${language}`,
-    );
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+        [language, phone_display, whatsapp_number],
+      );
+      await logActivity(
+        req.user.id,
+        "UPDATE_CONTACT_SETTINGS",
+        `Updated contact for language: ${language}`,
+      );
+      res.json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+);
 
 // ===== SITE SETTINGS ENDPOINTS =====
 
@@ -1152,40 +1160,51 @@ app.get("/api/site-settings/:key", async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT value FROM site_settings WHERE key = $1",
-      [key]
+      [key],
     );
-    if (result.rows.length === 0) return res.status(404).json({ error: "Setting not found" });
+    if (result.rows.length === 0)
+      return res.status(404).json({ error: "Setting not found" });
     res.json({ key, value: result.rows[0].value });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Update a site setting (admin only)
-app.put("/api/site-settings/:key", verifyToken, async (req, res) => {
-  const { key } = req.params;
-  const { value } = req.body;
-  if (!value && value !== "") return res.status(400).json({ error: "value is required" });
-  try {
-    const result = await pool.query(
-      `INSERT INTO site_settings (key, value, updated_at)
+// Update a site setting (super admin only)
+app.put(
+  "/api/site-settings/:key",
+  verifyToken,
+  verifySuperAdmin,
+  async (req, res) => {
+    const { key } = req.params;
+    const { value } = req.body;
+    if (!value && value !== "")
+      return res.status(400).json({ error: "value is required" });
+    try {
+      const result = await pool.query(
+        `INSERT INTO site_settings (key, value, updated_at)
        VALUES ($1, $2, CURRENT_TIMESTAMP)
        ON CONFLICT (key) DO UPDATE
        SET value = $2, updated_at = CURRENT_TIMESTAMP
        RETURNING *`,
-      [key, value]
-    );
-    await logActivity(req.user.id, "UPDATE_SITE_SETTINGS", `Updated site setting: ${key}`);
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+        [key, value],
+      );
+      await logActivity(
+        req.user.id,
+        "UPDATE_SITE_SETTINGS",
+        `Updated site setting: ${key}`,
+      );
+      res.json(result.rows[0]);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+);
 
 // ===== PEOPLE LIST ENDPOINTS =====
 
 // Get all people
-app.get("/api/people", verifyToken, async (req, res) => {
+app.get("/api/people", verifyToken, verifySuperAdmin, async (req, res) => {
   try {
     const result = await pool.query(
       "SELECT * FROM people_list ORDER BY created_at DESC",
@@ -1197,7 +1216,7 @@ app.get("/api/people", verifyToken, async (req, res) => {
 });
 
 // Create person
-app.post("/api/people", verifyToken, async (req, res) => {
+app.post("/api/people", verifyToken, verifySuperAdmin, async (req, res) => {
   const { name, phone } = req.body;
 
   if (!name) {
@@ -1216,7 +1235,7 @@ app.post("/api/people", verifyToken, async (req, res) => {
 });
 
 // Update person
-app.put("/api/people/:id", verifyToken, async (req, res) => {
+app.put("/api/people/:id", verifyToken, verifySuperAdmin, async (req, res) => {
   const { name, phone } = req.body;
 
   if (!name) {
@@ -1240,22 +1259,27 @@ app.put("/api/people/:id", verifyToken, async (req, res) => {
 });
 
 // Delete person
-app.delete("/api/people/:id", verifyToken, async (req, res) => {
-  try {
-    const result = await pool.query(
-      "DELETE FROM people_list WHERE id = $1 RETURNING *",
-      [req.params.id],
-    );
+app.delete(
+  "/api/people/:id",
+  verifyToken,
+  verifySuperAdmin,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        "DELETE FROM people_list WHERE id = $1 RETURNING *",
+        [req.params.id],
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Person not found" });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Person not found" });
+      }
+
+      res.json({ message: "Person deleted" });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-
-    res.json({ message: "Person deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  },
+);
 
 // ===== ADMIN MANAGEMENT ENDPOINTS (SUPER ADMIN ONLY) =====
 

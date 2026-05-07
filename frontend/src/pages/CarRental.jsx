@@ -312,7 +312,10 @@ export function CarRental() {
                       </div>
                       <button
                         onClick={() =>
-                          window.open(`https://wa.me/${quoteWhatsapp}?text=${encodeURIComponent("")}`, "_blank")
+                          window.open(
+                            `https://wa.me/${quoteWhatsapp}?text=${encodeURIComponent("")}`,
+                            "_blank",
+                          )
                         }
                         className="block w-2/4 mx-auto bg-[rgb(52,63,69)] text-white py-4 rounded-3xl hover:bg-white cursor-pointer hover:text-[rgb(52,63,69)] transition duration-300 border-1 font-bold text-center transition-all shadow-lg hover:shadow-xl"
                       >
