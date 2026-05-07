@@ -353,9 +353,9 @@ export function CarRental() {
           {/* Close button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-5 right-5 text-white text-3xl leading-none bg-white/10 hover:bg-white/25 w-10 h-10 flex items-center justify-center rounded-full transition"
+            className="absolute top-5 right-5 text-white text-3xl leading-none bg-white/10 hover:bg-white/25 w-10 h-10 flex items-center justify-center rounded-full transition cursor-pointer"
           >
-            ✕
+            <span className="">✕</span>
           </button>
 
           {/* Prev */}
@@ -365,9 +365,9 @@ export function CarRental() {
                 e.stopPropagation();
                 lightboxPrev();
               }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition cursor-pointer"
             >
-              &#8249;
+              <span className="text-4xl mb-2 mr-1"> &#8249;</span>
             </button>
           )}
 
@@ -386,9 +386,9 @@ export function CarRental() {
                 e.stopPropagation();
                 lightboxNext();
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition cursor-pointer"
             >
-              &#8250;
+              <span className="text-4xl mb-2 "> &#8250;</span>
             </button>
           )}
 

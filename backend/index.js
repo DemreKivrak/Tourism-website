@@ -225,6 +225,15 @@ async function initializeDatabase() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
+    //kişiler table
+    await client.query(`
+        CREATE TABLE IF NOT EXISTS people_list (
+          id SERIAL PRIMARY KEY, 
+          name VARCHAR(255) NOT NULL,
+          phone VARCHAR(50),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) 
+      `);
 
     await client.query("COMMIT");
     console.log("✅ Database tables initialized");
@@ -1055,6 +1064,81 @@ app.delete("/api/gallery/:id", verifyToken, async (req, res) => {
 });
 
 // ===== UTILITY ENDPOINTS =====
+
+// ===== PEOPLE LIST ENDPOINTS =====
+
+// Get all people
+app.get("/api/people", verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM people_list ORDER BY created_at DESC",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Create person
+app.post("/api/people", verifyToken, async (req, res) => {
+  const { name, phone } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO people_list (name, phone) VALUES ($1, $2) RETURNING *",
+      [name, phone || null],
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update person
+app.put("/api/people/:id", verifyToken, async (req, res) => {
+  const { name, phone } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE people_list SET name = $1, phone = $2 WHERE id = $3 RETURNING *",
+      [name, phone || null, req.params.id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Person not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete person
+app.delete("/api/people/:id", verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "DELETE FROM people_list WHERE id = $1 RETURNING *",
+      [req.params.id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Person not found" });
+    }
+
+    res.json({ message: "Person deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // ===== ADMIN MANAGEMENT ENDPOINTS (SUPER ADMIN ONLY) =====
 

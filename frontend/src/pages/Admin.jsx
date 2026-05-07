@@ -107,6 +107,12 @@ export function Admin() {
   const [editingAdmin, setEditingAdmin] = useState(null);
   const [adminError, setAdminError] = useState("");
 
+  // Contact / People state
+  const [people, setPeople] = useState([]);
+  const [personForm, setPersonForm] = useState({ name: "", phone: "" });
+  const [editingPerson, setEditingPerson] = useState(null);
+  const [isAddingPerson, setIsAddingPerson] = useState(false);
+
   const isSuperAdmin = user?.role === "super_admin";
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -124,6 +130,14 @@ export function Admin() {
       setTours(toursData);
       setRentalCars(rentalCarsData);
       setGalleryItems(galleryData);
+
+      // Load people separately so a failure doesn't break the rest
+      try {
+        const peopleData = await api.getPeople();
+        setPeople(peopleData);
+      } catch (error) {
+        console.error("Error loading people:", error);
+      }
 
       // Load admin users and activity logs if super admin
       if (user?.role === "super_admin") {
@@ -693,6 +707,50 @@ export function Admin() {
     }
   };
 
+  // Contact / People Functions
+  const handleAddPerson = async () => {
+    if (!personForm.name.trim()) return alert("Name is required");
+    try {
+      await api.createPerson(personForm);
+      const updated = await api.getPeople();
+      setPeople(updated);
+      setPersonForm({ name: "", phone: "" });
+      setIsAddingPerson(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleEditPerson = (person) => {
+    setEditingPerson(person.id);
+    setPersonForm({ name: person.name, phone: person.phone || "" });
+  };
+
+  const handleUpdatePerson = async (id) => {
+    if (!personForm.name.trim()) return alert("Name is required");
+    try {
+      await api.updatePerson(id, personForm);
+      const updated = await api.getPeople();
+      setPeople(updated);
+      setEditingPerson(null);
+      setPersonForm({ name: "", phone: "" });
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleDeletePerson = async (id) => {
+    if (confirm("Bu kişiyi silmek istediğinize emin misiniz?")) {
+      try {
+        await api.deletePerson(id);
+        const updated = await api.getPeople();
+        setPeople(updated);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -840,6 +898,16 @@ export function Admin() {
               </button>
             </>
           )}
+          <button
+            onClick={() => setActiveTab("contact")}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              activeTab === "contact"
+                ? "bg-green-600 text-white shadow-lg"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            Contact ({people.length})
+          </button>
         </div>
 
         {/* Destinations Tab */}
@@ -2558,6 +2626,172 @@ export function Admin() {
           {activityLogs.length === 0 && (
             <div className="text-center py-12 text-gray-500">
               <p>No activity logs found.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Contact Tab */}
+      {activeTab === "contact" && (
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Contact List ({people.length})
+            </h2>
+            <button
+              onClick={() => {
+                setIsAddingPerson(true);
+                setPersonForm({ name: "", phone: "" });
+              }}
+              className="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center gap-2"
+            >
+              <span className="text-xl">+</span> Add Person
+            </button>
+          </div>
+
+          {/* Add Form */}
+          {isAddingPerson && (
+            <div className="bg-gray-50 rounded-lg p-4 mb-6 flex flex-wrap gap-4 items-end">
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Full name"
+                  value={personForm.name}
+                  onChange={(e) =>
+                    setPersonForm({ ...personForm, name: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              </div>
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="text"
+                  placeholder="+90 555 000 00 00"
+                  value={personForm.phone}
+                  onChange={(e) =>
+                    setPersonForm({ ...personForm, phone: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddPerson}
+                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setIsAddingPerson(false)}
+                  className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* People Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-3 text-left">#</th>
+                  <th className="px-4 py-3 text-left">Name</th>
+                  <th className="px-4 py-3 text-left">Phone</th>
+                  <th className="px-4 py-3 text-left">Date Added</th>
+                  <th className="px-4 py-3 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {people.map((person, index) => (
+                  <tr key={person.id} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-500">{index + 1}</td>
+                    <td className="px-4 py-3">
+                      {editingPerson === person.id ? (
+                        <input
+                          type="text"
+                          value={personForm.name}
+                          onChange={(e) =>
+                            setPersonForm({
+                              ...personForm,
+                              name: e.target.value,
+                            })
+                          }
+                          className="px-3 py-1 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none w-full"
+                        />
+                      ) : (
+                        <span className="font-medium">{person.name}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {editingPerson === person.id ? (
+                        <input
+                          type="text"
+                          value={personForm.phone}
+                          onChange={(e) =>
+                            setPersonForm({
+                              ...personForm,
+                              phone: e.target.value,
+                            })
+                          }
+                          className="px-3 py-1 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none w-full"
+                        />
+                      ) : (
+                        <span>{person.phone || "-"}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500">
+                      {new Date(person.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3">
+                      {editingPerson === person.id ? (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleUpdatePerson(person.id)}
+                            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-xs"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingPerson(null)}
+                            className="bg-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-400 transition text-xs"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditPerson(person)}
+                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeletePerson(person.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-xs"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {people.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              <p>Henüz kayıtlı kişi yok.</p>
             </div>
           )}
         </div>

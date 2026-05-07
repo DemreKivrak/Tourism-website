@@ -268,6 +268,44 @@ export const api = {
     return response.json();
   },
 
+  // People List
+  getPeople: async () => {
+    const response = await fetch(`${API_URL}/people`, {
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error("Failed to fetch people");
+    return response.json();
+  },
+
+  createPerson: async (data) => {
+    const response = await fetch(`${API_URL}/people`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error("Failed to create person");
+    return response.json();
+  },
+
+  updatePerson: async (id, data) => {
+    const response = await fetch(`${API_URL}/people/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error("Failed to update person");
+    return response.json();
+  },
+
+  deletePerson: async (id) => {
+    const response = await fetch(`${API_URL}/people/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) throw new Error("Failed to delete person");
+    return response.json();
+  },
+
   // Admin Management (Super Admin only)
   getAdminUsers: async () => {
     const response = await fetch(`${API_URL}/admin/users`, {
