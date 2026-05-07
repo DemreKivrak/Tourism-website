@@ -5,12 +5,15 @@ import { Header } from "./Header";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "../components/Footer";
+import { WarningModal } from "./WarningModal";
+import { languageNames } from "../utils/languageNames";
 
 export function TourPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [tourData, setTourData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [langWarningDismissed, setLangWarningDismissed] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const pricingRef = useRef(null);
@@ -20,18 +23,6 @@ export function TourPage() {
       behavior: "smooth",
       block: "start",
     });
-  };
-
-  const languageNames = {
-    tr: "Turkish",
-    en: "English",
-    de: "German",
-    ru: "Russian",
-    ar: "Arabic",
-    fr: "French",
-    es: "Spanish",
-    it: "Italian",
-    ja: "Japanese",
   };
 
   useEffect(() => {
@@ -91,6 +82,12 @@ export function TourPage() {
     fetchTourData();
   }, [id]);
 
+  const langMismatch =
+    !langWarningDismissed &&
+    tourData?.language &&
+    i18n.language?.slice(0, 2) &&
+    tourData.language !== i18n.language?.slice(0, 2);
+
   if (loading) {
     return (
       <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
@@ -126,6 +123,13 @@ export function TourPage() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
       <Header />
+
+      <WarningModal
+        isOpen={!!langMismatch}
+        onClose={() => setLangWarningDismissed(true)}
+        tourLang={tourData?.language}
+        siteLang={i18n.language?.slice(0, 2)}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-8 mt-30">
         {/* Back Button */}
