@@ -2696,15 +2696,15 @@ export function Admin() {
               Contact List ({people.length})
             </h2>
             {isSuperAdmin && (
-            <button
-              onClick={() => {
-                setIsAddingPerson(true);
-                setPersonForm({ name: "", phone: "" });
-              }}
-              className="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center gap-2"
-            >
-              <span className="text-xl">+</span> Add Person
-            </button>
+              <button
+                onClick={() => {
+                  setIsAddingPerson(true);
+                  setPersonForm({ name: "", phone: "" });
+                }}
+                className="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition flex items-center gap-2"
+              >
+                <span className="text-xl">+</span> Add Person
+              </button>
             )}
           </div>
 
@@ -2765,7 +2765,9 @@ export function Admin() {
                   <th className="px-4 py-3 text-left">Name</th>
                   <th className="px-4 py-3 text-left">Phone</th>
                   <th className="px-4 py-3 text-left">Date Added</th>
-                  {isSuperAdmin && <th className="px-4 py-3 text-left">Actions</th>}
+                  {isSuperAdmin && (
+                    <th className="px-4 py-3 text-left">Actions</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -2810,39 +2812,39 @@ export function Admin() {
                       {new Date(person.created_at).toLocaleDateString()}
                     </td>
                     {isSuperAdmin && (
-                    <td className="px-4 py-3">
-                      {editingPerson === person.id ? (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleUpdatePerson(person.id)}
-                            className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-xs"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setEditingPerson(null)}
-                            className="bg-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-400 transition text-xs"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEditPerson(person)}
-                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeletePerson(person.id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-xs"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </td>
+                      <td className="px-4 py-3">
+                        {editingPerson === person.id ? (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleUpdatePerson(person.id)}
+                              className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-xs"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingPerson(null)}
+                              className="bg-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-400 transition text-xs"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditPerson(person)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeletePerson(person.id)}
+                              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-xs"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
                     )}
                   </tr>
                 ))}
@@ -2857,130 +2859,139 @@ export function Admin() {
           )}
 
           {/* Phone Settings by Language */}
-          {isSuperAdmin && <div className="mt-10">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              Phone Settings by Language
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-4 py-3 text-left">Language</th>
-                    <th className="px-4 py-3 text-left">Select Contact</th>
-                    <th className="px-4 py-3 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {["en", "tr", "de", "fr", "es", "ru", "ja"].map((lang) => (
-                    <tr key={lang} className="border-b hover:bg-gray-50">
-                      <td className="px-4 py-3 font-bold uppercase text-gray-600">
-                        {lang}
-                      </td>
-                      <td className="px-4 py-3">
-                        <select
-                          value={
-                            people.find(
-                              (p) =>
-                                p.phone ===
-                                contactSettingsForms[lang]?.phone_display,
-                            )?.id || ""
-                          }
-                          onChange={(e) => {
-                            const person = people.find(
-                              (p) => String(p.id) === e.target.value,
-                            );
-                            if (!person) return;
-                            const raw = (person.phone || "").replace(/\D/g, "");
-                            setContactSettingsForms((prev) => ({
-                              ...prev,
-                              [lang]: {
-                                phone_display: person.phone || "",
-                                whatsapp_number: raw,
-                              },
-                            }));
-                          }}
-                          className="px-3 py-1 border rounded-lg focus:ring-2 focus:ring-amber-400 outline-none w-full text-gray-600"
-                        >
-                          <option value="" disabled>
-                            -- Kişi seç --
-                          </option>
-                          {people.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {p.name}
-                              {p.phone ? ` — ${p.phone}` : ""}
-                            </option>
-                          ))}
-                        </select>
-                        {contactSettingsForms[lang]?.phone_display && (
-                          <p className="text-xs text-gray-400 mt-1">
-                            Mevcut: {contactSettingsForms[lang].phone_display}
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => handleSaveContactSettings(lang)}
-                          className="bg-amber-500 text-white px-4 py-1 rounded hover:bg-amber-600 transition text-xs"
-                        >
-                          Save
-                        </button>
-                      </td>
+          {isSuperAdmin && (
+            <div className="mt-10">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                Phone Settings by Language
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 py-3 text-left">Language</th>
+                      <th className="px-4 py-3 text-left">Select Contact</th>
+                      <th className="px-4 py-3 text-left">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {["en", "tr", "de", "fr", "es", "ru", "ja"].map((lang) => (
+                      <tr key={lang} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-3 font-bold uppercase text-gray-600">
+                          {lang}
+                        </td>
+                        <td className="px-4 py-3">
+                          <select
+                            value={
+                              people.find(
+                                (p) =>
+                                  p.phone ===
+                                  contactSettingsForms[lang]?.phone_display,
+                              )?.id || ""
+                            }
+                            onChange={(e) => {
+                              const person = people.find(
+                                (p) => String(p.id) === e.target.value,
+                              );
+                              if (!person) return;
+                              const raw = (person.phone || "").replace(
+                                /\D/g,
+                                "",
+                              );
+                              setContactSettingsForms((prev) => ({
+                                ...prev,
+                                [lang]: {
+                                  phone_display: person.phone || "",
+                                  whatsapp_number: raw,
+                                },
+                              }));
+                            }}
+                            className="px-3 py-1 border rounded-lg focus:ring-2 focus:ring-amber-400 outline-none w-full text-gray-600"
+                          >
+                            <option value="" disabled>
+                              -- Kişi seç --
+                            </option>
+                            {people.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                                {p.phone ? ` — ${p.phone}` : ""}
+                              </option>
+                            ))}
+                          </select>
+                          {contactSettingsForms[lang]?.phone_display && (
+                            <p className="text-xs text-gray-400 mt-1">
+                              Mevcut: {contactSettingsForms[lang].phone_display}
+                            </p>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => handleSaveContactSettings(lang)}
+                            className="bg-amber-500 text-white px-4 py-1 rounded hover:bg-amber-600 transition text-xs"
+                          >
+                            Save
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Quote WhatsApp (Vehicle Rental - Request Quote button) */}
-          {isSuperAdmin && <div className="mt-10">
-            <h3 className="text-xl font-bold text-gray-800 mb-1">
-              Vehicle Rental — Request Quote Number
-            </h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Araç Kiralama sayfasındaki "Request Quote" butonuna atanacak
-              WhatsApp numarası.
-            </p>
-            <div className="flex flex-wrap items-end gap-4">
-              {people.length > 0 && (
-                <select
-                  value={
-                    people.find(
-                      (p) =>
-                        (p.phone || "").replace(/\D/g, "") === quoteWhatsapp,
-                    )?.id || ""
-                  }
-                  onChange={(e) => {
-                    const person = people.find(
-                      (p) => String(p.id) === e.target.value,
-                    );
-                    if (!person) return;
-                    setQuoteWhatsapp((person.phone || "").replace(/\D/g, ""));
-                  }}
-                  className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-400 outline-none text-gray-600 min-w-[220px]"
-                >
-                  <option value="" disabled>
-                    -- Kişi seç --
-                  </option>
-                  {people.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                      {p.phone ? ` — ${p.phone}` : ""}
+          {isSuperAdmin && (
+            <div className="mt-10">
+              <h3 className="text-xl font-bold text-gray-800 mb-1">
+                Vehicle Rental — Request Quote Number
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Araç Kiralama sayfasındaki "Request Quote" butonuna atanacak
+                WhatsApp numarası.
+              </p>
+              <div className="flex flex-wrap items-end gap-4">
+                {people.length > 0 && (
+                  <select
+                    value={
+                      people.find(
+                        (p) =>
+                          (p.phone || "").replace(/\D/g, "") === quoteWhatsapp,
+                      )?.id || ""
+                    }
+                    onChange={(e) => {
+                      const person = people.find(
+                        (p) => String(p.id) === e.target.value,
+                      );
+                      if (!person) return;
+                      setQuoteWhatsapp((person.phone || "").replace(/\D/g, ""));
+                    }}
+                    className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-400 outline-none text-gray-600 min-w-[220px]"
+                  >
+                    <option value="" disabled>
+                      -- Kişi seç --
                     </option>
-                  ))}
-                </select>
-              )}
-              {quoteWhatsapp && (
-                <p className="text-sm text-gray-400">Mevcut: {quoteWhatsapp}</p>
-              )}
-              <button
-                onClick={handleSaveQuoteWhatsapp}
-                className="bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition text-sm font-semibold"
-              >
-                Save
-              </button>
+                    {people.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                        {p.phone ? ` — ${p.phone}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {quoteWhatsapp && (
+                  <p className="text-sm text-gray-400">
+                    Mevcut: {quoteWhatsapp}
+                  </p>
+                )}
+                <button
+                  onClick={handleSaveQuoteWhatsapp}
+                  className="bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition text-sm font-semibold"
+                >
+                  Save
+                </button>
+              </div>
             </div>
-          </div>}
+          )}
         </div>
       )}
 
