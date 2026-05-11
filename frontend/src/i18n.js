@@ -49,7 +49,8 @@ const resources = {
       "contact.supportDesc": "Always available to help during your journey",
       "contact.quality": "Quality Service",
       "contact.qualityDesc": "Dedicated to making your journey unforgettable",
-      "contact.bookingSubtitle": "Contact us for booking, availability or any of your questions!",
+      "contact.bookingSubtitle":
+        "Contact us for booking, availability or any of your questions!",
       "contact.heroSubtitle":
         "We're here to help plan your perfect Turkish adventure",
 
@@ -287,7 +288,8 @@ const resources = {
         "Yolculuğunuz boyunca yardımcı olmaya her zaman hazırız",
       "contact.quality": "Kaliteli Hizmet",
       "contact.qualityDesc": "Yolculuğunuzu unutulmaz kılmaya adanmış",
-      "contact.bookingSubtitle": "Rezervasyon, müsaitlik veya sorularınız için bizimle iletişime geçin!",
+      "contact.bookingSubtitle":
+        "Rezervasyon, müsaitlik veya sorularınız için bizimle iletişime geçin!",
       "contact.heroSubtitle":
         "Mükemmel Türkiye maceranızı planlamanıza yardımcı olmak için buradayız",
 
