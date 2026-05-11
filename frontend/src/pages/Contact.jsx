@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Footer } from "../components/Footer";
 import { WhatsappContact } from "../components/WhatsappContact";
 import { useContactSettings } from "../contexts/ContactSettingsContext";
+import { useNavigate } from "react-router-dom";
 
 export function Contact() {
   const { t } = useTranslation();
@@ -12,6 +13,7 @@ export function Contact() {
   const { currentPhone, currentWhatsapp } = useContactSettings();
   const yandexLink =
     "https://yandex.com.tr/maps/org/oltre_turizm/1254953363/?ll=28.986200%2C41.043300&z=14";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const scrollToElement = (elementId) => {
@@ -38,118 +40,168 @@ export function Contact() {
     }
   }, [location]);
 
+  // Animasyon varyantları
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -100 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 100 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <title>Contact us</title>
       <Header />
 
       {/* Hero Section */}
-      <div className="relative">
+      <div className="relative h-[65vh] md:h-[75vh] w-full overflow-hidden">
         <img
-          className="w-full h-96 block object-cover"
-          src="homepage-pic-1.jpg"
-          alt="Turkey landscape"
+          src="/homepage-pic-1.jpg"
+          alt="Tours"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-b from-black/50 to-black/30 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-6xl font-bold text-white mb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end">
+          <div className="max-w-7xl mx-auto px-4 w-full pb-10">
+            <h1 className="text-2xl md:text-6xl font-onest font-semibold text-white mb-3 justify-self-start">
               {t("contact.title").toUpperCase()}
             </h1>
-            <p className="text-xl text-white/90">{t("contact.heroSubtitle")}</p>
+            <p className="text-sm md:text-xl text-white/80 font-onest text-left">
+              {t("contact.heroSubtitle")}
+            </p>
           </div>
         </div>
       </div>
 
+      {/* Breadcrumb */}
+      <nav className=" ml-5 mb-8 hidden md:flex items-center gap-2 text-sm text-gray-500 mt-5">
+        <span
+          className="hover:text-blue-500 cursor-pointer transition"
+          onClick={() => navigate("/")}
+        >
+          {t("nav.home")}
+        </span>
+        <span>/</span>
+        <span className="text-gray-800 font-medium">{t("nav.contact")}</span>
+      </nav>
+
+      <h2 className="text-2xl md:text-4xl font-sans font-light tracking-tight text-gray-800  leading-snug mt-10 md:mt-0">
+        {t("contact.bookingSubtitle")}
+      </h2>
+
       <div id="contact" className="max-w-7xl mx-auto px-4 py-16">
-        {/* Quick Contact Cards */}
-        <div className="md:flex justify-evenly md:gap-6 mb-16 flex flex-col md:flex-row gap-6">
-          {/* Phone Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-1 border-dotted">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-linear-to-br p-4 rounded-full mb-4 border-1 border-dotted border-black">
+        {/* Contact Cards + Map */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left: Contact Cards */}
+          <div className="flex flex-col gap-6 lg:w-2/5 items-center">
+            {/* Phone Card */}
+            <div className="flex items-center gap-4 lg:gap-5 bg-white rounded-xl shadow-md px-4 py-3 lg:p-6 border border-gray-600 hover:shadow-lg transition-shadow duration-300 w-full md:w-8/10">
+              <div className="shrink-0 p-2 lg:p-4 rounded-full border border-solid">
                 <img
-                  className="h-12 w-12"
-                  src="icons8-call-50.png"
+                  className="h-7 w-7 "
+                  src="icons8-phone-100.png"
                   alt="Phone"
                 />
               </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2 md:mt-10">
-                {t("contact.phone").toUpperCase()}
-              </h3>
-              <a
-                href={`tel:+${currentWhatsapp}`}
-                className="text-2xl font-semibold text-green-400 hover:text-green-700 transition"
-              >
-                {currentPhone}
-              </a>
-              <p className="text-sm text-gray-500 mt-2">
-                {t("contact.available")}
-              </p>
-            </div>
-          </div>
+              <div>
+                <h3 className="text-sm font-semibold font-onest text-gray-400 uppercase tracking-wide mb-1">
+                  {t("contact.phone")}
+                </h3>
+                <a
+                  href={`tel:+${currentWhatsapp}`}
+                  className="text-xl font-medium font-onest text-gray-600 transition whitespace-nowrap block hover:text-blue-500 transition duration-200"
+                >
+                  +{currentPhone}
+                </a>
 
-          {/* Email Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-1 border-dotted">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-linear-to-br p-4 rounded-full mb-4 border-1 border-dotted">
+                <p className="text-sm text-gray-400 mt-1">
+                  {t("contact.available")}
+                </p>
+              </div>
+            </div>
+
+            {/* Email Card */}
+            <div className="flex items-center gap-4 lg:gap-5 bg-white rounded-xl shadow-md px-4 py-3 lg:p-6 border border-gray-600 hover:shadow-lg transition-shadow duration-300 w-full md:w-8/10">
+              <div className="shrink-0 p-2 lg:p-4 rounded-full border border-solid">
                 <img
-                  className="h-12 w-12"
+                  className="h-7 w-7 "
                   src="icons8-email-64.png"
                   alt="Email"
                 />
               </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2 md:mt-10">
-                {t("contact.email").toUpperCase()}
-              </h3>
-              <a
-                href="mailto:ornekemail@gmail.com"
-                className="text-xl font-semibold text-green-400 hover:text-green-700 transition break-all"
-              >
-                oltretour@hotmail.com
-              </a>
-              <p className="text-sm text-gray-500 mt-2">
-                {t("contact.response")}
-              </p>
+              <div>
+                <h3 className="text-sm font-semibold font-onest text-gray-400 uppercase tracking-wide mb-1">
+                  {t("contact.email")}
+                </h3>
+                <a
+                  href="mailto:oltretour@hotmail.com"
+                  className="text-base text-xl font-medium font-onest text-gray-600 transition block hover:text-blue-500 transition duration-200"
+                >
+                  oltretour@hotmail.com
+                </a>
+                <p className="text-sm text-gray-400 mt-1">
+                  {t("contact.response")}
+                </p>
+              </div>
+            </div>
+
+            {/* Location Card */}
+            <div className="flex items-center gap-4 lg:gap-5 bg-white rounded-xl shadow-md px-4 py-3 lg:p-6 border border-gray-600 hover:shadow-lg transition-shadow duration-300 w-full md:w-8/10">
+              <div className="shrink-0 p-2 lg:p-4 rounded-full border border-solid mt-1">
+                <img
+                  className="h-7 w-7 "
+                  src="icons8-location-100.png"
+                  alt="Location"
+                />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold font-onest text-gray-400 uppercase tracking-wide mb-1">
+                  {t("contact.location")}
+                </h3>
+                <p className="text-sm text-gray-700 font-medium leading-relaxed">
+                  Bozkurt Mah. Ergenekon Cad. Muratoğlu Çarşısı No:41 Kat:3
+                  Daire:116 Pangaltı-Şişli / İstanbul
+                </p>
+              </div>
             </div>
           </div>
 
-          {/*location card */}
-
-          <div
-            className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all
-           duration-300 transform hover:-translate-y-2 border-1 border-dotted md:w-65"
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-linear-to-br p-4 rounded-full mb-4 border-1 border-dotted">
-                <img
-                  className="h-12 w-12"
-                  src="icons8-location-100.png"
-                  alt="location"
-                />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-2">
-                {t("contact.location").toUpperCase()}
-              </h3>
-              <p className="">
-                Bozkurt Mah.Ergenekon Cad.Muratoğlu Çarşısı No:41 Kat:3
-                Daire:116 Pangaltı-Şişli/Istanbul
-              </p>
-              <button
-                className="
-                bg-green-400 mt-5 rounded-xl font-semibold px-2 py-1 text-white cursor-pointer group-hover:shadow hover:bg-green-600 transition duration-300 
-              "
-                onClick={() =>
-                  window.open(yandexLink, "_blank", "noopener,noreferrer")
-                }
-              >
-                {t("contact.viewOnMap")}
-              </button>
-            </div>
+          {/* Right: Map */}
+          <div className="lg:w-3/5 rounded-xl shadow-lg relative">
+            <iframe
+              src="https://maps.google.com/maps?q=41.0433,28.9862&z=16&output=embed"
+              width="100%"
+              height="100%"
+              className="rounded-xl"
+              style={{ border: 0, minHeight: "450px" }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Oltre Turizm Konum"
+            />
+            <button
+              className="absolute top-5 left-3 bg-white text-blue-600  text-sm font-bold px-4 py-1.5 rounded-3xl cursor-pointer transition duration-300 shadow-md "
+              onClick={() =>
+                window.open(yandexLink, "_blank", "noopener,noreferrer")
+              }
+            >
+              {t("contact.viewOnMap")}
+            </button>
           </div>
         </div>
 
         {/* Why Choose Us Section */}
-        <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-xl p-12 max-w-5xl mx-auto">
+        {/* <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-xl p-12 max-w-5xl mx-auto mt-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">
             {t("contact.whyChoose")}
           </h2>
@@ -191,7 +243,7 @@ export function Contact() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <WhatsappContact />
       <Footer />
