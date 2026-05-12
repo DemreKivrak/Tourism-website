@@ -325,7 +325,7 @@ export function TourPage() {
             <h2 className="text-2xl font-bold font-onest text-gray-900 mb-4">
               {t("tours.highlights")}
             </h2>
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-30 md:ml-50">
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-30 justify-items-center">
               {tourData.highlights.map((highlight, idx) => (
                 <div key={idx} className="flex items-start gap-3">
                   <span className="text-amber-500 text-xl">✦</span>
@@ -340,7 +340,7 @@ export function TourPage() {
             <h2 className="text-2xl  font-onest font-bold text-gray-900 mb-4">
               {t("tours.included")}
             </h2>
-            <div className="ml-2 md:ml-50 md:gap-x-55 grid grid-cols-2 mt-10 md:mt-0  md:grid-cols-2 gap-6">
+            <div className="ml-2 grid grid-cols-1 mt-10 md:mt-0  md:grid-cols-2 gap-6 justify-items-center ">
               <div>
                 <h3 className="font-semibold text-green-700 mb-3 flex items-center gap-2">
                   <span className="text-xl">✓</span> {t("tours.included")}
@@ -357,6 +357,7 @@ export function TourPage() {
                   ))}
                 </ul>
               </div>
+
               <div>
                 <h3 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
                   <span className="text-xl">✗</span> {t("tours.notIncluded")}
@@ -425,17 +426,17 @@ export function TourPage() {
                 {tourData.pricing.map((priceEntry, idx) => (
                   <div
                     key={priceEntry.id || idx}
-                    className="border-l-4 border-green-500 pl-6 pb-4"
+                    className="border-l-4 border-blue-500 pl-6 pb-4"
                   >
                     <div className="flex items-center gap-4 mb-2">
-                      <span className="bg-green-500 text-white font-bold px-3 py-1 rounded-full text-sm min-w-max">
+                      <span className="bg-blue-500 mt-1 text-white font-bold px-3 py-1 rounded-full text-sm min-w-max">
                         {priceEntry.group_size_label ||
                           `${priceEntry.min_persons} Person`}
                       </span>
                       <h3 className="text-xl font-bold text-gray-900">
                         {priceEntry.price_per_person}
                       </h3>
-                      <span className="text-gray-600 text-sm">
+                      <span className="text-gray-600 text-sm ">
                         {priceEntry.price_type === "in_total"
                           ? "in Total"
                           : "per person"}
