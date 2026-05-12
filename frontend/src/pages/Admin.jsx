@@ -89,9 +89,9 @@ export function Admin() {
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [tourPricing, setTourPricing] = useState([]);
   const [newPricing, setNewPricing] = useState({
-    min_persons: "",
-    max_persons: "",
+    group_size_label: "",
     price_per_person: "",
+    price_type: "per_person",
   });
 
   // Admin management state
@@ -515,14 +515,18 @@ export function Admin() {
   };
 
   const handleAddPricing = async (tourId) => {
-    if (!newPricing.min_persons || !newPricing.price_per_person) {
-      alert("Please fill in minimum persons and price per person");
+    if (!newPricing.group_size_label || !newPricing.price_per_person) {
+      alert("Please fill in group size and price");
       return;
     }
     try {
       const created = await api.createTourPricing(tourId, newPricing);
       setTourPricing([...tourPricing, created]);
-      setNewPricing({ min_persons: "", max_persons: "", price_per_person: "" });
+      setNewPricing({
+        group_size_label: "",
+        price_per_person: "",
+        price_type: "per_person",
+      });
     } catch (error) {
       console.error("Error adding pricing:", error);
       alert("Failed to add pricing");
@@ -650,7 +654,11 @@ export function Admin() {
     setImageFile(null);
     setImageFiles([]);
     setTourPricing([]);
-    setNewPricing({ min_persons: "", max_persons: "", price_per_person: "" });
+    setNewPricing({
+      group_size_label: "",
+      price_per_person: "",
+      price_type: "per_person",
+    });
   };
 
   // Admin Management Functions
@@ -1648,14 +1656,17 @@ export function Admin() {
                                     className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3"
                                   >
                                     <div className="flex items-center gap-4">
-                                      <span className="bg-green-500 text-white font-bold px-3 py-1 rounded-full text-sm">
-                                        {pricing.min_persons}
+                                      <span className="bg-green-500 text-white font-bold px-3 py-1 rounded-full text-sm min-w-max">
+                                        {pricing.group_size_label ||
+                                          `${pricing.min_persons} Person`}
                                       </span>
                                       <span className="text-xl font-bold text-gray-900">
                                         {pricing.price_per_person}
                                       </span>
                                       <span className="text-gray-600 text-sm">
-                                        per person
+                                        {pricing.price_type === "in_total"
+                                          ? "in Total"
+                                          : "per person"}
                                       </span>
                                     </div>
                                     <button
@@ -1684,22 +1695,22 @@ export function Admin() {
                               <h5 className="text-sm font-semibold text-gray-700 mb-3">
                                 Add New Pricing Entry
                               </h5>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                                 <input
                                   type="text"
                                   placeholder="Group size (e.g., 1-2 persons)"
-                                  value={newPricing.min_persons}
+                                  value={newPricing.group_size_label}
                                   onChange={(e) =>
                                     setNewPricing({
                                       ...newPricing,
-                                      min_persons: e.target.value,
+                                      group_size_label: e.target.value,
                                     })
                                   }
                                   className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
                                 />
                                 <input
                                   type="text"
-                                  placeholder="Price (e.g., 500 €)"
+                                  placeholder="Price (e.g., 500€)"
                                   value={newPricing.price_per_person}
                                   onChange={(e) =>
                                     setNewPricing({
@@ -1709,18 +1720,56 @@ export function Admin() {
                                   }
                                   className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
                                 />
-                                <button
-                                  type="button"
-                                  onClick={() => handleAddPricing(formData.id)}
-                                  className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
-                                >
-                                  Add
-                                </button>
                               </div>
-                              <p className="text-xs text-gray-500 mt-2">
-                                💡 Enter custom text for group size (e.g., "1-2
-                                persons", "3+ persons")
-                              </p>
+                              <div className="flex items-center gap-6 mb-3">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input
+                                    type="radio"
+                                    name="price_type"
+                                    value="per_person"
+                                    checked={
+                                      newPricing.price_type === "per_person"
+                                    }
+                                    onChange={() =>
+                                      setNewPricing({
+                                        ...newPricing,
+                                        price_type: "per_person",
+                                      })
+                                    }
+                                    className="accent-green-500"
+                                  />
+                                  <span className="text-sm font-medium text-gray-700">
+                                    per person
+                                  </span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                  <input
+                                    type="radio"
+                                    name="price_type"
+                                    value="in_total"
+                                    checked={
+                                      newPricing.price_type === "in_total"
+                                    }
+                                    onChange={() =>
+                                      setNewPricing({
+                                        ...newPricing,
+                                        price_type: "in_total",
+                                      })
+                                    }
+                                    className="accent-green-500"
+                                  />
+                                  <span className="text-sm font-medium text-gray-700">
+                                    in Total
+                                  </span>
+                                </label>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleAddPricing(formData.id)}
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 font-semibold"
+                              >
+                                Add
+                              </button>
                             </div>
                           </div>
                         </div>

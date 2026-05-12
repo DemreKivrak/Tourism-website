@@ -178,6 +178,25 @@ async function initializeDatabase() {
       )
     `);
 
+    // Add group_size_label and price_type columns to tour_pricing if not exist
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'tour_pricing' AND column_name = 'group_size_label'
+        ) THEN
+          ALTER TABLE tour_pricing ADD COLUMN group_size_label TEXT;
+        END IF;
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'tour_pricing' AND column_name = 'price_type'
+        ) THEN
+          ALTER TABLE tour_pricing ADD COLUMN price_type VARCHAR(20) DEFAULT 'per_person';
+        END IF;
+      END $$;
+    `);
+
     // Admin activity log table - NEW
     await client.query(`
       CREATE TABLE IF NOT EXISTS admin_activity_log (
@@ -785,27 +804,22 @@ app.get("/api/tours/:tourId/pricing", async (req, res) => {
 
 // Create pricing entry
 app.post("/api/tours/:tourId/pricing", verifyToken, async (req, res) => {
-  const price_per_person = req.body.price_per_person;
-  const min_persons =
-    req.body.min_persons !== "" && req.body.min_persons != null
-      ? parseInt(req.body.min_persons, 10)
-      : null;
-  const max_persons =
-    req.body.max_persons !== "" && req.body.max_persons != null
-      ? parseInt(req.body.max_persons, 10)
-      : null;
+  const { group_size_label, price_per_person, price_type } = req.body;
   const tourId = parseInt(req.params.tourId, 10);
 
-  if (!min_persons || !price_per_person) {
+  if (!group_size_label || !price_per_person) {
     return res
       .status(400)
-      .json({ error: "min_persons and price_per_person are required" });
+      .json({ error: "group_size_label and price_per_person are required" });
   }
+
+  const resolvedPriceType =
+    price_type === "in_total" ? "in_total" : "per_person";
 
   try {
     const result = await pool.query(
-      "INSERT INTO tour_pricing (tour_id, min_persons, max_persons, price_per_person) VALUES ($1, $2, $3, $4) RETURNING *",
-      [tourId, min_persons, max_persons, price_per_person],
+      "INSERT INTO tour_pricing (tour_id, min_persons, group_size_label, price_per_person, price_type) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [tourId, 0, group_size_label, price_per_person, resolvedPriceType],
     );
     res.json(result.rows[0]);
   } catch (err) {

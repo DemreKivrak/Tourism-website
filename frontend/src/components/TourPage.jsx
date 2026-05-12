@@ -325,7 +325,7 @@ export function TourPage() {
             <h2 className="text-2xl font-bold font-onest text-gray-900 mb-4">
               {t("tours.highlights")}
             </h2>
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-30">
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-30 md:ml-50">
               {tourData.highlights.map((highlight, idx) => (
                 <div key={idx} className="flex items-start gap-3">
                   <span className="text-amber-500 text-xl">✦</span>
@@ -427,14 +427,19 @@ export function TourPage() {
                     key={priceEntry.id || idx}
                     className="border-l-4 border-green-500 pl-6 pb-4"
                   >
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-green-500 text-white font-bold px-3 py-1 rounded-full text-sm">
-                        {priceEntry.min_persons}
+                    <div className="flex items-center gap-4 mb-2">
+                      <span className="bg-green-500 text-white font-bold px-3 py-1 rounded-full text-sm min-w-max">
+                        {priceEntry.group_size_label ||
+                          `${priceEntry.min_persons} Person`}
                       </span>
                       <h3 className="text-xl font-bold text-gray-900">
                         {priceEntry.price_per_person}
                       </h3>
-                      <span className="text-gray-600 text-sm">per person</span>
+                      <span className="text-gray-600 text-sm">
+                        {priceEntry.price_type === "in_total"
+                          ? "in Total"
+                          : "per person"}
+                      </span>
                     </div>
                   </div>
                 ))}
