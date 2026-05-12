@@ -785,12 +785,16 @@ app.get("/api/tours/:tourId/pricing", async (req, res) => {
 
 // Create pricing entry
 app.post("/api/tours/:tourId/pricing", verifyToken, async (req, res) => {
-  const { min_persons, price_per_person } = req.body;
+  const price_per_person = req.body.price_per_person;
+  const min_persons =
+    req.body.min_persons !== "" && req.body.min_persons != null
+      ? parseInt(req.body.min_persons, 10)
+      : null;
   const max_persons =
     req.body.max_persons !== "" && req.body.max_persons != null
-      ? req.body.max_persons
+      ? parseInt(req.body.max_persons, 10)
       : null;
-  const tourId = req.params.tourId;
+  const tourId = parseInt(req.params.tourId, 10);
 
   if (!min_persons || !price_per_person) {
     return res
