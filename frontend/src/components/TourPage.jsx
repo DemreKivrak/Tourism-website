@@ -284,7 +284,7 @@ export function TourPage() {
                     See pricing details below
                   </p>
                   <button
-                    onClick={() => navigate("/contact#contact")}
+                    onClick={() => navigate("/contact")}
                     className="button-type-1 mt-4 text-xl hover:scale-105"
                   >
                     {t("common.bookNow")}
@@ -315,7 +315,7 @@ export function TourPage() {
             <h2 className="text-2xl font-bold font-onest text-gray-900 mb-4">
               {t("tours.overview")}
             </h2>
-            <p className="text-gray-700 leading-relaxed ">
+            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
               {tourData.overview}
             </p>
           </section>
@@ -469,7 +469,7 @@ export function TourPage() {
             </p>
           </div>
           <button
-            onClick={() => navigate("/contact#contact")}
+            onClick={() => navigate("/contact")}
             className="bg-linear-to-r bg-gradient-to-r from-[rgb(36,54,61)] to-[rgb(49,76,88)] text-white px-10 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer whitespace-nowrap hover:bg-none hover:border-1 hover:text-[rgb(36,54,61)]"
           >
             {t("common.bookNow")}

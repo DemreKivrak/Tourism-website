@@ -95,11 +95,11 @@ export function Contact() {
         <span className="text-gray-800 font-medium">{t("nav.contact")}</span>
       </nav>
 
-      <h2 className="text-2xl md:text-4xl font-sans font-light tracking-tight text-gray-800  leading-snug mt-10 md:mt-0">
+      <h2 className="text-2xl md:text-4xl font-sans font-light tracking-tight text-gray-800 leading-snug mt-8 md:mt-0 mb-0 md:mb-10">
         {t("contact.bookingSubtitle")}
       </h2>
 
-      <div id="contact" className="max-w-7xl mx-auto px-4 py-16">
+      <div id="contact" className="max-w-7xl mx-auto px-4 pt-6 pb-16">
         {/* Contact Cards + Map */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Contact Cards */}

@@ -9,6 +9,7 @@ export function WhatsappContact() {
   const { t } = useTranslation();
   const { currentWhatsapp } = useContactSettings();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showButton, setShowButton] = useState(true);
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent("");
@@ -57,7 +58,19 @@ export function WhatsappContact() {
     },
   };
 
-  if (mobileMenuOpen) {
+  //scroll checker
+  const handleScroll = () => {
+    const isAtBottom =
+      window.innerHeight + window.scrollY >= document.body.scrollHeight - 10;
+    setShowButton(isAtBottom);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (mobileMenuOpen || showButton) {
     return null;
   }
 

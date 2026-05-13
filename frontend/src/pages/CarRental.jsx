@@ -345,7 +345,7 @@ export function CarRental() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/contact#contact"
+              to="/contact"
               className="bg-white/0  px-8 py-4 rounded-4xl font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg border-1 border-white text-white hover:text-[rgb(31,37,40)]"
             >
               {t("services.contactUs")}

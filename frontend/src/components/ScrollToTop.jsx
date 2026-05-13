@@ -7,7 +7,7 @@ export function ScrollToTop() {
   useEffect(() => {
     if (!hash) {
       // Hash yoksa en üste git
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
     // Hash varsa (örn: #contact) - scroll davranışı zaten çalışacak
   }, [pathname, hash]);
