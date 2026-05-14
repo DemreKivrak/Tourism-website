@@ -154,6 +154,19 @@ async function initializeDatabase() {
       END $$;
     `);
 
+    // Add departure_city column to existing tours table if it doesn't exist
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM information_schema.columns
+          WHERE table_name = 'tours' AND column_name = 'departure_city'
+        ) THEN
+          ALTER TABLE tours ADD COLUMN departure_city VARCHAR(255);
+        END IF;
+      END $$;
+    `);
+
     // Add group_size_label and price_type columns to tour_pricing if not exist
     await client.query(`
       DO $$
@@ -657,12 +670,13 @@ app.post("/api/tours", verifyToken, async (req, res) => {
     itinerary,
     language,
     is_recommended,
+    departure_city,
   } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO tours (name, destination, price, duration, description, images, overview, highlights, included, not_included, itinerary, language, is_recommended) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
+      `INSERT INTO tours (name, destination, price, duration, description, images, overview, highlights, included, not_included, itinerary, language, is_recommended, departure_city) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
       [
         name,
         destination,
@@ -677,6 +691,7 @@ app.post("/api/tours", verifyToken, async (req, res) => {
         itinerary,
         language || "tr",
         is_recommended ? 1 : 0,
+        departure_city || null,
       ],
     );
 
@@ -703,6 +718,7 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
     itinerary,
     language,
     is_recommended,
+    departure_city,
   } = req.body;
 
   console.log("Updating tour ID:", req.params.id, "with language:", language); // Debug log
@@ -710,8 +726,9 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE tours SET name = $1, destination = $2, price = $3, duration = $4, description = $5, images = $6, 
-       overview = $7, highlights = $8, included = $9, not_included = $10, itinerary = $11, language = $12, is_recommended = $13 
-       WHERE id = $14 RETURNING *`,
+       overview = $7, highlights = $8, included = $9, not_included = $10, itinerary = $11, language = $12, is_recommended = $13,
+       departure_city = $14
+       WHERE id = $15 RETURNING *`,
       [
         name,
         destination,
@@ -726,6 +743,7 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
         itinerary,
         language || "tr",
         is_recommended ? 1 : 0,
+        departure_city || null,
         req.params.id,
       ],
     );

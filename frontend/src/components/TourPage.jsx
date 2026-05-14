@@ -266,10 +266,20 @@ export function TourPage() {
                 {tourData.name}
               </h1>
 
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-4 mb-6">
                 <div className="text-gray-600">
                   <span className="font-semibold">🕐 {tourData.duration}</span>
                 </div>
+                {tourData.departure_city && (
+                  <div className="text-gray-600">
+                    <span>
+                      📍 Departs from{" "}
+                      <span className="font-semibold">
+                        {tourData.departure_city}
+                      </span>
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="border-t border-b border-gray-200 py-4 mb-6">

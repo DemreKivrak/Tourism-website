@@ -401,6 +401,7 @@ export function Admin() {
             (formData.itinerary || ""),
           language: formData.language || "tr",
           is_recommended: formData.is_recommended || false,
+          departure_city: formData.departure_city || "",
         });
         setTours([...tours, newTour]);
         setFormData({});
@@ -1218,6 +1219,18 @@ export function Admin() {
                     }
                     className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
                   />
+                  <input
+                    type="text"
+                    placeholder="Departure City (e.g., Istanbul)"
+                    value={formData.departure_city || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        departure_city: e.target.value,
+                      })
+                    }
+                    className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
+                  />
                   <select
                     value={formData.language || "tr"}
                     onChange={(e) =>
@@ -1443,6 +1456,18 @@ export function Admin() {
                               setFormData({
                                 ...formData,
                                 duration: e.target.value,
+                              })
+                            }
+                            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Departure City (e.g., Istanbul)"
+                            value={formData.departure_city || ""}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                departure_city: e.target.value,
                               })
                             }
                             className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
