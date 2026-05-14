@@ -43,7 +43,9 @@ export function SelectedDestination() {
   }, [id]);
 
   const filteredTours = destination
-    ? tours.filter((tour) => tour.destination === destination.name)
+    ? tours.filter((tour) =>
+        (tour.destinations || [tour.destination]).includes(destination.name),
+      )
     : [];
 
   if (loading) {

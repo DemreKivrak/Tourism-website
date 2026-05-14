@@ -256,10 +256,20 @@ export function TourPage() {
           {/* Tour Info & Booking Card */}
           <div>
             <div className="bg-white rounded-xl shadow-xl p-6 sticky top-24">
-              <div className="mb-4">
-                <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                  {tourData.destination}
-                </span>
+              <div className="mb-4 flex flex-wrap gap-2">
+                {(tourData.destinations?.length
+                  ? tourData.destinations
+                  : tourData.destination
+                    ? [tourData.destination]
+                    : []
+                ).map((dest) => (
+                  <span
+                    key={dest}
+                    className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full"
+                  >
+                    {dest}
+                  </span>
+                ))}
               </div>
 
               <h1 className=" text-xl md:text-3xl font-onest font-bold text-gray-900 mb-2">

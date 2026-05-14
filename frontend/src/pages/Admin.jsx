@@ -370,7 +370,7 @@ export function Admin() {
 
   // Tour Functions
   const handleAddTour = async () => {
-    if (formData.name && formData.destination) {
+    if (formData.name && formData.destinations?.length > 0) {
       try {
         let imageUrls = [];
 
@@ -388,7 +388,8 @@ export function Admin() {
 
         const newTour = await api.createTour({
           name: formData.name,
-          destination: formData.destination,
+          destinations: formData.destinations,
+          destination: formData.destinations[0] || "",
           price: "", // Legacy field - not used anymore
           duration: formData.duration || "N/A",
           images: imageUrls.join(","),
@@ -470,6 +471,9 @@ export function Admin() {
       const updatedData = {
         ...formData,
         images: imageUrls.join(","),
+        destinations: formData.destinations || [],
+        destination:
+          (formData.destinations || [])[0] || formData.destination || "",
         itinerary:
           (formData.itinerary_disabled ? "[DISABLED]\n" : "") +
           (formData.itinerary || ""),
@@ -1196,20 +1200,37 @@ export function Admin() {
                     }
                     className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
                   />
-                  <select
-                    value={formData.destination || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, destination: e.target.value })
-                    }
-                    className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="">Select Destination</option>
-                    {destinations.map((dest) => (
-                      <option key={dest.id} value={dest.name}>
-                        {dest.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="border rounded-lg p-3">
+                    <p className="text-xs text-gray-500 mb-2 font-medium">
+                      Destinations (select one or more)
+                    </p>
+                    <div className="grid grid-cols-2 gap-1">
+                      {destinations.map((dest) => (
+                        <label
+                          key={dest.id}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={(formData.destinations || []).includes(
+                              dest.name,
+                            )}
+                            onChange={(e) => {
+                              const current = formData.destinations || [];
+                              setFormData({
+                                ...formData,
+                                destinations: e.target.checked
+                                  ? [...current, dest.name]
+                                  : current.filter((d) => d !== dest.name),
+                              });
+                            }}
+                            className="rounded"
+                          />
+                          <span className="text-sm">{dest.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                   <input
                     type="text"
                     placeholder="Duration (e.g., 3 Nights / 4 Days)"
@@ -1431,23 +1452,40 @@ export function Admin() {
                             }
                             className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
                           />
-                          <select
-                            value={formData.destination || ""}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                destination: e.target.value,
-                              })
-                            }
-                            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500"
-                          >
-                            <option value="">Select Destination</option>
-                            {destinations.map((dest) => (
-                              <option key={dest.id} value={dest.name}>
-                                {dest.name}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="border rounded-lg p-3">
+                            <p className="text-xs text-gray-500 mb-2 font-medium">
+                              Destinations (select one or more)
+                            </p>
+                            <div className="grid grid-cols-2 gap-1">
+                              {destinations.map((dest) => (
+                                <label
+                                  key={dest.id}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={(
+                                      formData.destinations || []
+                                    ).includes(dest.name)}
+                                    onChange={(e) => {
+                                      const current =
+                                        formData.destinations || [];
+                                      setFormData({
+                                        ...formData,
+                                        destinations: e.target.checked
+                                          ? [...current, dest.name]
+                                          : current.filter(
+                                              (d) => d !== dest.name,
+                                            ),
+                                      });
+                                    }}
+                                    className="rounded"
+                                  />
+                                  <span className="text-sm">{dest.name}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
                           <input
                             type="text"
                             placeholder="Duration"

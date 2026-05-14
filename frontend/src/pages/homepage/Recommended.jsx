@@ -41,6 +41,7 @@ export function Recommended() {
         info: tour.duration || "tour info",
         language: tour.language || "tr",
         departure_city: tour.departure_city || null,
+        destinations: tour.destinations || [],
       }));
       setRecommended(toursWithDefaults.slice(0, 10));
     } catch (error) {

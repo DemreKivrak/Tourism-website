@@ -167,6 +167,24 @@ async function initializeDatabase() {
       END $$;
     `);
 
+    // Create tour_destinations join table for many-to-many tour destinations
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS tour_destinations (
+        tour_id INTEGER NOT NULL,
+        destination_name VARCHAR(255) NOT NULL,
+        PRIMARY KEY (tour_id, destination_name),
+        FOREIGN KEY (tour_id) REFERENCES tours(id) ON DELETE CASCADE
+      )
+    `);
+
+    // Migrate existing destination data into tour_destinations
+    await client.query(`
+      INSERT INTO tour_destinations (tour_id, destination_name)
+      SELECT id, destination FROM tours
+      WHERE destination IS NOT NULL AND destination != ''
+      ON CONFLICT DO NOTHING
+    `);
+
     // Add group_size_label and price_type columns to tour_pricing if not exist
     await client.query(`
       DO $$
@@ -614,10 +632,19 @@ app.get("/api/tours", async (req, res) => {
       [tourIds],
     );
 
-    // Attach pricing to tours
+    // Get destinations for all tours
+    const tourDestinationsResult = await pool.query(
+      "SELECT * FROM tour_destinations WHERE tour_id = ANY($1) ORDER BY destination_name ASC",
+      [tourIds],
+    );
+
+    // Attach pricing and destinations to tours
     const toursWithPricing = tours.map((tour) => ({
       ...tour,
       pricing: pricingResult.rows.filter((p) => p.tour_id === tour.id),
+      destinations: tourDestinationsResult.rows
+        .filter((d) => d.tour_id === tour.id)
+        .map((d) => d.destination_name),
     }));
 
     res.json(toursWithPricing);
@@ -645,9 +672,16 @@ app.get("/api/tours/:id", async (req, res) => {
       [tour.id],
     );
 
+    // Get destinations for this tour
+    const destResult = await pool.query(
+      "SELECT destination_name FROM tour_destinations WHERE tour_id = $1 ORDER BY destination_name ASC",
+      [tour.id],
+    );
+
     res.json({
       ...tour,
       pricing: pricingResult.rows,
+      destinations: destResult.rows.map((d) => d.destination_name),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -659,6 +693,7 @@ app.post("/api/tours", verifyToken, async (req, res) => {
   const {
     name,
     destination,
+    destinations,
     price,
     duration,
     description,
@@ -674,12 +709,21 @@ app.post("/api/tours", verifyToken, async (req, res) => {
   } = req.body;
 
   try {
+    // destinations array takes priority; fall back to legacy destination string
+    const destinationsList =
+      destinations?.length > 0
+        ? destinations
+        : destination
+          ? [destination]
+          : [];
+    const primaryDestination = destinationsList[0] || "";
+
     const result = await pool.query(
       `INSERT INTO tours (name, destination, price, duration, description, images, overview, highlights, included, not_included, itinerary, language, is_recommended, departure_city) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
       [
         name,
-        destination,
+        primaryDestination,
         price,
         duration,
         description,
@@ -695,8 +739,18 @@ app.post("/api/tours", verifyToken, async (req, res) => {
       ],
     );
 
+    const newTour = result.rows[0];
+
+    // Insert into tour_destinations
+    for (const dest of destinationsList) {
+      await pool.query(
+        "INSERT INTO tour_destinations (tour_id, destination_name) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+        [newTour.id, dest],
+      );
+    }
+
     await logActivity(req.user.id, "CREATE_TOUR", `Created: ${name}`);
-    res.json(result.rows[0]);
+    res.json({ ...newTour, destinations: destinationsList });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -707,6 +761,7 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
   const {
     name,
     destination,
+    destinations,
     price,
     duration,
     description,
@@ -721,6 +776,11 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
     departure_city,
   } = req.body;
 
+  // destinations array takes priority; fall back to legacy destination string
+  const destinationsList =
+    destinations?.length > 0 ? destinations : destination ? [destination] : [];
+  const primaryDestination = destinationsList[0] || "";
+
   console.log("Updating tour ID:", req.params.id, "with language:", language); // Debug log
 
   try {
@@ -731,7 +791,7 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
        WHERE id = $15 RETURNING *`,
       [
         name,
-        destination,
+        primaryDestination,
         price,
         duration,
         description,
@@ -748,14 +808,26 @@ app.put("/api/tours/:id", verifyToken, async (req, res) => {
       ],
     );
 
-    console.log("Updated tour result:", result.rows[0]); // Debug log
+    const updatedTour = result.rows[0];
+    console.log("Updated tour result:", updatedTour); // Debug log
+
+    // Update tour_destinations: delete old, insert new
+    await pool.query("DELETE FROM tour_destinations WHERE tour_id = $1", [
+      req.params.id,
+    ]);
+    for (const dest of destinationsList) {
+      await pool.query(
+        "INSERT INTO tour_destinations (tour_id, destination_name) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+        [req.params.id, dest],
+      );
+    }
 
     await logActivity(
       req.user.id,
       "UPDATE_TOUR",
       `Updated ID: ${req.params.id}`,
     );
-    res.json(result.rows[0]);
+    res.json({ ...updatedTour, destinations: destinationsList });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
