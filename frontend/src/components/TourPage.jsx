@@ -266,14 +266,14 @@ export function TourPage() {
                 {tourData.name}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 mb-6">
+              <div className="flex-col justify-items-start flex-wrap items-center gap-4 mb-6">
                 <div className="text-gray-600">
                   <span className="font-semibold">🕐 {tourData.duration}</span>
                 </div>
                 {tourData.departure_city && (
-                  <div className="text-gray-600">
+                  <div className="text-gray-600 ">
                     <span>
-                      📍 Departs from{" "}
+                      📍 {t("tours.departureFrom")}{" "}
                       <span className="font-semibold">
                         {tourData.departure_city}
                       </span>

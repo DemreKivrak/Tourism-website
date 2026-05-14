@@ -76,7 +76,6 @@ export function Tours() {
         return {
           ...tour,
           img: firstImage,
-          type: "Guaranteed Departured Tour",
         };
       });
 
@@ -483,7 +482,12 @@ export function Tours() {
                 <h3 className="text-xl font-bold text-gray-900 uppercase mb-2">
                   {tour.name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">{tour.type}</p>
+                {tour.departure_city && (
+                  <p className="text-sm text-gray-600 mb-4">
+                    {t("tours.departureFrom")}{" "}
+                    <span className="font-medium">{tour.departure_city}</span>
+                  </p>
+                )}
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200 mt-auto">
                   <div className="flex text-l  font-bold font-onest text-[rgb(36,54,61)] items-center">

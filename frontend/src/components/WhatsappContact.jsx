@@ -9,7 +9,7 @@ export function WhatsappContact() {
   const { t } = useTranslation();
   const { currentWhatsapp } = useContactSettings();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [showButton, setShowButton] = useState(true);
+  const [showButton, setShowButton] = useState(false);
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent("");
@@ -19,22 +19,6 @@ export function WhatsappContact() {
   const imgRef = useRef(null);
 
   const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const el = imgRef.current;
-    if (!el) return;
-
-    const handleEnter = () => setIsVisible(true);
-    const handleLeave = () => setIsVisible(false);
-
-    el.addEventListener("mouseenter", handleEnter);
-    el.addEventListener("mouseleave", handleLeave);
-    // cleanup: component unmount olunca listener'ları kaldır
-    return () => {
-      el.removeEventListener("mouseenter", handleEnter);
-      el.removeEventListener("mouseleave", handleLeave);
-    };
-  }, []);
 
   //Mobile checker
   useEffect(() => {
@@ -97,6 +81,8 @@ export function WhatsappContact() {
           src="/icons8-whatsapp-240.png"
           className=" cursor-pointer z-20 md:h-20 h-15 cursor-pointer "
           onClick={handleWhatsApp}
+          onMouseEnter={() => setIsVisible(true)}
+          onMouseLeave={() => setIsVisible(false)}
         ></img>
       </div>
     </>

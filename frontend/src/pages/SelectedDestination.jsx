@@ -189,20 +189,35 @@ export function SelectedDestination() {
 
                   {/* Features */}
                   <div className="space-y-1 mb-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <svg
-                        className="w-4 h-4 text-blue-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span>{t("tours.expertGuide")}</span>
-                    </div>
+                    {tour.departure_city && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <svg
+                          className="w-4 h-4 text-blue-500 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span>
+                          {t("tours.departureFrom")}{" "}
+                          <span className="font-medium">
+                            {tour.departure_city}
+                          </span>
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* CTA Button */}
