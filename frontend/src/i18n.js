@@ -75,6 +75,7 @@ const resources = {
       "tours.recommendedBadge": "RECOMMENDED",
       "tours.expertGuide": "Expert Guide Included",
       "tours.departureFrom": "Departs from",
+      "tours.multipleDestinations": "Multiple Destinations",
       "tours.exploreSubtitle":
         "Explore Turkey's most beautiful destinations with our curated tour packages",
       "tours.filterByLanguage": "Filter by Language",
@@ -315,6 +316,7 @@ const resources = {
       "tours.recommendedBadge": "ÖNERİLEN",
       "tours.expertGuide": "Uzman Rehber Dahil",
       "tours.departureFrom": "Hareket Noktası",
+      "tours.multipleDestinations": "Çoklu Destinasyon",
       "tours.exploreSubtitle":
         "Özenle hazırlanmış tur paketlerimizle Türkiye'nin en güzel rotaları keşfedin",
       "tours.filterByLanguage": "Dile Göre Filtrele:",
@@ -529,6 +531,7 @@ const resources = {
       "tours.recommendedBadge": "EMPFOHLEN",
       "tours.expertGuide": "Expertenführer inbegriffen",
       "tours.departureFrom": "Abfahrt von",
+      "tours.multipleDestinations": "Mehrere Reiseziele",
       "tours.exploreSubtitle":
         "Entdecken Sie die schönsten Reiseziele der Türkei mit unseren kuratierten Tourpaketen",
       "tours.filterByLanguage": "Nach Sprache filtern:",
@@ -634,6 +637,7 @@ const resources = {
       "tours.recommendedBadge": "RECOMMANDÉ",
       "tours.expertGuide": "Guide expert inclus",
       "tours.departureFrom": "Départ de",
+      "tours.multipleDestinations": "Destinations multiples",
       "tours.exploreSubtitle":
         "Explorez les plus belles destinations de la Turquie avec nos forfaits touristiques sélectionnés",
       "tours.filterByLanguage": "Filtrer par langue:",
@@ -739,6 +743,7 @@ const resources = {
       "tours.recommendedBadge": "RECOMENDADO",
       "tours.expertGuide": "Guía experto incluido",
       "tours.departureFrom": "Sale desde",
+      "tours.multipleDestinations": "Múltiples destinos",
       "tours.exploreSubtitle":
         "Explore los destinos más hermosos de Turquía con nuestros paquetes turísticos seleccionados",
       "tours.filterByLanguage": "Filtrar por idioma:",
@@ -843,6 +848,7 @@ const resources = {
       "tours.recommendedBadge": "РЕКОМЕНДУЕТСЯ",
       "tours.expertGuide": "Экспертный гид включен",
       "tours.departureFrom": "Отправление из",
+      "tours.multipleDestinations": "Несколько направлений",
       "tours.exploreSubtitle":
         "Откройте для себя самые красивые направления Турции с нашими туристическими пакетами",
       "tours.filterByLanguage": "Фильтр по языку:",
@@ -947,6 +953,7 @@ const resources = {
       "tours.recommendedBadge": "おすすめ",
       "tours.expertGuide": "専門ガイド含まれる",
       "tours.departureFrom": "出発地",
+      "tours.multipleDestinations": "複数の目的地",
       "tours.exploreSubtitle":
         "厳選されたツアーパッケージでトルコの最も美しい目的地を探索",
       "tours.filterByLanguage": "言語でフィルター:",

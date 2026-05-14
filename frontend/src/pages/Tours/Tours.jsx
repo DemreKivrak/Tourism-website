@@ -495,7 +495,11 @@ export function Tours() {
                   <div className="flex text-l  font-bold font-onest text-[rgb(36,54,61)] items-center">
                     <img className="h-6" src="/icons8-location-100.png"></img>
                     <span className="ml-1">
-                      {(tour.destinations || [tour.destination]).join(", ")}
+                      {(tour.destinations || []).length > 1 ? (
+                        <span>{t("tours.multipleDestinations")}</span>
+                      ) : (
+                        (tour.destinations || [tour.destination]).join(", ")
+                      )}
                     </span>
                   </div>
                   <button
