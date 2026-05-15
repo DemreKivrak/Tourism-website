@@ -5,6 +5,7 @@ import { DestinationsComp } from "./DestinationsComp.jsx";
 import { Recommended } from "./Recommended.jsx";
 import { Footer } from "../../components/Footer.jsx";
 import { motion, AnimatePresence } from "framer-motion";
+import { WhyChoose } from "./WhyChoose.jsx";
 
 export function Homepage() {
   const { t } = useTranslation();
@@ -98,6 +99,7 @@ export function Homepage() {
         <div className="max-w-7xl mx-auto px-4 py-16 space-y-16">
           <DestinationsComp />
           <Recommended />
+          <WhyChoose />
         </div>
 
         <WhatsappContact />

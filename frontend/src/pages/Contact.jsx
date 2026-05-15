@@ -199,51 +199,6 @@ export function Contact() {
             </button>
           </div>
         </div>
-
-        {/* Why Choose Us Section */}
-        {/* <div className="bg-linear-to-br from-amber-50 to-orange-50 rounded-xl p-12 max-w-5xl mx-auto mt-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-            {t("contact.whyChoose")}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-4">
-              <span className="text-amber-500 text-3xl">✓</span>
-              <div>
-                <h4 className="font-semibold text-gray-800 text-lg">
-                  {t("contact.expertGuides")}
-                </h4>
-                <p className="text-gray-600">{t("contact.expertGuidesDesc")}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="text-amber-500 text-3xl">✓</span>
-              <div>
-                <h4 className="font-semibold text-gray-800 text-lg">
-                  {t("contact.bestPrice")}
-                </h4>
-                <p className="text-gray-600">{t("contact.bestPriceDesc")}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="text-amber-500 text-3xl">✓</span>
-              <div>
-                <h4 className="font-semibold text-gray-800 text-lg">
-                  {t("contact.support")}
-                </h4>
-                <p className="text-gray-600">{t("contact.supportDesc")}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="text-amber-500 text-3xl">✓</span>
-              <div>
-                <h4 className="font-semibold text-gray-800 text-lg">
-                  {t("contact.quality")}
-                </h4>
-                <p className="text-gray-600">{t("contact.qualityDesc")}</p>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
       <WhatsappContact />
       <Footer />
