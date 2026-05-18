@@ -75,6 +75,7 @@ export function Admin() {
   const [formData, setFormData] = useState({});
   const [isAdding, setIsAdding] = useState(false);
   const [tourDestinationFilter, setTourDestinationFilter] = useState("");
+  const [tourLanguageFilter, setTourLanguageFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const [imageFile, setImageFile] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
@@ -1264,6 +1265,10 @@ export function Admin() {
                     <option value="de">German (Almanca)</option>
                     <option value="ru">Russian (Rusça)</option>
                     <option value="ar">Arabic (Arapça)</option>
+                    <option value="fr">French (Fransızca)</option>
+                    <option value="es">Spanish (İspanyolca)</option>
+                    <option value="it">Italian (İtalyanca)</option>
+                    <option value="ja">Japanese (Japonca)</option>
                   </select>
                   <textarea
                     placeholder="Overview"
@@ -1402,7 +1407,7 @@ export function Admin() {
             )}
 
             {/* Tours List */}
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-4 flex flex-wrap items-center gap-3">
               <label className="text-sm font-medium text-gray-600">
                 Filter by Destination:
               </label>
@@ -1418,11 +1423,35 @@ export function Admin() {
                   </option>
                 ))}
               </select>
-              {tourDestinationFilter && (
+              <label className="text-sm font-medium text-gray-600">
+                Filter by Language:
+              </label>
+              <select
+                value={tourLanguageFilter}
+                onChange={(e) => setTourLanguageFilter(e.target.value)}
+                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 text-sm"
+              >
+                <option value="">All Languages</option>
+                <option value="tr">Turkish (Türkçe)</option>
+                <option value="en">English (İngilizce)</option>
+                <option value="de">German (Almanca)</option>
+                <option value="ru">Russian (Rusça)</option>
+                <option value="ar">Arabic (Arapça)</option>
+                <option value="fr">French (Fransızca)</option>
+                <option value="es">Spanish (İspanyolca)</option>
+                <option value="it">Italian (İtalyanca)</option>
+                <option value="ja">Japanese (Japonca)</option>
+              </select>
+              {(tourDestinationFilter || tourLanguageFilter) && (
                 <span className="text-sm text-gray-500">
                   {
-                    tours.filter((t) => t.destination === tourDestinationFilter)
-                      .length
+                    tours.filter(
+                      (t) =>
+                        (!tourDestinationFilter ||
+                          t.destination === tourDestinationFilter) &&
+                        (!tourLanguageFilter ||
+                          t.language === tourLanguageFilter),
+                    ).length
                   }{" "}
                   tour(s) found
                 </span>
@@ -1432,8 +1461,10 @@ export function Admin() {
               {tours
                 .filter(
                   (tour) =>
-                    !tourDestinationFilter ||
-                    tour.destination === tourDestinationFilter,
+                    (!tourDestinationFilter ||
+                      tour.destination === tourDestinationFilter) &&
+                    (!tourLanguageFilter ||
+                      tour.language === tourLanguageFilter),
                 )
                 .map((tour) => (
                   <div
