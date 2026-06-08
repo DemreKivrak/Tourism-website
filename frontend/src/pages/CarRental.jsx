@@ -7,6 +7,7 @@ import { Footer } from "../components/Footer";
 import { WhatsappContact } from "../components/WhatsappContact";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSwipeable } from "react-swipeable";
 
 export function CarRental() {
   const { t } = useTranslation();
@@ -54,6 +55,13 @@ export function CarRental() {
       ...prev,
       [carId]: ((prev[carId] ?? 0) - 1 + total) % total,
     }));
+
+  const lightboxHandlers = useSwipeable({
+    onSwipedLeft: lightboxNext,
+    onSwipedRight: lightboxPrev,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   useEffect(() => {
     document.title = "Services - Vehicle Rental";
@@ -122,6 +130,80 @@ export function CarRental() {
       transition: { duration: 0.8, ease: "easeOut" },
     },
   };
+
+  function CarGallery({
+    category,
+    activeIndex,
+    onPrev,
+    onNext,
+    onSelect,
+    onOpenLightbox,
+  }) {
+    const handlers = useSwipeable({
+      onSwipedLeft: onNext,
+      onSwipedRight: onPrev,
+      preventScrollOnSwipe: true,
+      trackMouse: true,
+    });
+
+    return (
+      <div className="p-4 flex flex-col gap-2">
+        <div
+          {...handlers}
+          className="relative h-80 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group"
+        >
+          <img
+            src={category.images[activeIndex]}
+            alt={`${category.model} main`}
+            className="w-full h-full object-cover transition-transform duration-300 cursor-pointer"
+            onClick={onOpenLightbox}
+          />
+          {category.images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPrev();
+                }}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transition-all duration-300 cursor-pointer"
+              >
+                <span className="text-4xl mb-2 mr-1"> &#8249;</span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNext();
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transition-all duration-300 cursor-pointer"
+              >
+                <span className="text-4xl mb-2 ml-1"> &#8250;</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {category.images.length > 1 && (
+          <div className="flex gap-3">
+            {category.images.map((image, idx) => (
+              <div
+                key={idx}
+                onClick={() => onSelect(idx)}
+                className={`relative flex-1 h-14 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer ${
+                  idx === activeIndex ? "ring-2 ring-blue-500" : ""
+                }`}
+              >
+                <img
+                  src={image}
+                  alt={`${category.model} ${idx + 1}`}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -194,78 +276,26 @@ export function CarRental() {
                 className="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 "
               >
                 <div className="grid md:grid-cols-2">
-                  {/* Image Gallery Section */}
-                  <div className="p-4 flex flex-col gap-2">
-                    {/* Main large image with nav buttons */}
-                    {category.images.length > 0 && (
-                      <div className="relative h-80 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow group">
-                        <img
-                          src={category.images[getActiveIndex(category.id)]}
-                          alt={`${category.model} main`}
-                          className="w-full h-full object-cover transition-transform duration-300 cursor-pointer"
-                          onClick={() =>
-                            openLightbox(
-                              category.images,
-                              getActiveIndex(category.id),
-                            )
-                          }
-                        />
-                        {category.images.length > 1 && (
-                          <>
-                            <button
-                              onClick={() =>
-                                goPrev(category.id, category.images.length)
-                              }
-                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transition-all duration-300 cursor-pointer"
-                            >
-                              <span className="text-4xl mb-2 mr-1">
-                                {" "}
-                                &#8249;
-                              </span>
-                            </button>
-                            <button
-                              onClick={() =>
-                                goNext(category.id, category.images.length)
-                              }
-                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full w-12 h-12 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transition-all duration-300 cursor-pointer"
-                            >
-                              <span className="text-4xl mb-2 ml-1">
-                                {" "}
-                                &#8250;
-                              </span>
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    )}
-                    {/* Thumbnails */}
-                    {category.images.length > 1 && (
-                      <div className="flex gap-3">
-                        {category.images.map((image, idx) => (
-                          <div
-                            key={idx}
-                            onClick={() =>
-                              setActiveImageIndex((prev) => ({
-                                ...prev,
-                                [category.id]: idx,
-                              }))
-                            }
-                            className={`relative flex-1 h-14 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer ${
-                              idx === getActiveIndex(category.id)
-                                ? "ring-2 ring-blue-500"
-                                : ""
-                            }`}
-                          >
-                            <img
-                              src={image}
-                              alt={`${category.model} ${idx + 1}`}
-                              className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  {category.images.length > 0 && (
+                    <CarGallery
+                      category={category}
+                      activeIndex={getActiveIndex(category.id)}
+                      onPrev={() => goPrev(category.id, category.images.length)}
+                      onNext={() => goNext(category.id, category.images.length)}
+                      onSelect={(idx) =>
+                        setActiveImageIndex((prev) => ({
+                          ...prev,
+                          [category.id]: idx,
+                        }))
+                      }
+                      onOpenLightbox={() =>
+                        openLightbox(
+                          category.images,
+                          getActiveIndex(category.id),
+                        )
+                      }
+                    />
+                  )}
 
                   {/* Information Section */}
                   <div className="p-8 flex flex-col">
@@ -359,6 +389,7 @@ export function CarRental() {
       {/* Lightbox */}
       {lightbox && (
         <div
+          {...lightboxHandlers}
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
           onClick={closeLightbox}
         >

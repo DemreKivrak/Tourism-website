@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { WarningModal } from "./WarningModal";
 import { languageNames } from "../utils/languageNames";
+import { useSwipeable } from "react-swipeable";
 
 export function TourPage() {
   const { t, i18n } = useTranslation();
@@ -14,9 +15,24 @@ export function TourPage() {
   const [tourData, setTourData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [langWarningDismissed, setLangWarningDismissed] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState({});
+  const [lightbox, setLightbox] = useState(null); // { images, index }
   const { id } = useParams();
   const navigate = useNavigate();
   const pricingRef = useRef(null);
+
+  const openLightbox = (images, index) => setLightbox({ images, index });
+  const closeLightbox = () => setLightbox(null);
+  const lightboxNext = () =>
+    setLightbox((prev) => ({
+      ...prev,
+      index: (prev.index + 1) % prev.images.length,
+    }));
+  const lightboxPrev = () =>
+    setLightbox((prev) => ({
+      ...prev,
+      index: (prev.index - 1 + prev.images.length) % prev.images.length,
+    }));
 
   const scrollToPricing = () => {
     pricingRef.current.scrollIntoView({
@@ -24,6 +40,21 @@ export function TourPage() {
       block: "start",
     });
   };
+
+  //swipable handler.
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextImage(),
+    onSwipedRight: () => prevImage(),
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
+
+  const lightboxSwipeHandlers = useSwipeable({
+    onSwipedLeft: lightboxNext,
+    onSwipedRight: lightboxPrev,
+    preventScrollOnSwipe: true,
+    trackMouse: true,
+  });
 
   useEffect(() => {
     const fetchTourData = async () => {
@@ -155,13 +186,19 @@ export function TourPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Main Image Slider */}
           <div className="relative">
-            <div className="relative h-96 lg:h-[400px] rounded-xl overflow-hidden shadow-2xl">
+            <div
+              {...swipeHandlers}
+              className="relative h-96 lg:h-[400px] rounded-xl overflow-hidden shadow-2xl"
+            >
               {tourData.images[currentImageIndex] &&
               tourData.images[currentImageIndex] !== "homepage-pic-1.jpg" ? (
                 <img
                   src={tourData.images[currentImageIndex]}
                   alt={`Tour image ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain cursor-pointer"
+                  onClick={() =>
+                    openLightbox(tourData.images, currentImageIndex)
+                  }
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -246,7 +283,7 @@ export function TourPage() {
                   <img
                     src={img}
                     alt={`Thumbnail ${idx + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer"
                   />
                 </button>
               ))}
@@ -497,6 +534,78 @@ export function TourPage() {
         </div>
       </div>
       <Footer />
+
+      {/* Lightbox */}
+      <div>
+        {lightbox && (
+          <div
+            {...lightboxSwipeHandlers}
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+            onClick={closeLightbox}
+          >
+            {/* Close button */}
+            <button
+              onClick={closeLightbox}
+              className="absolute top-5 right-5 text-white text-3xl leading-none bg-white/10 hover:bg-white/25 w-10 h-10 flex items-center justify-center rounded-full transition cursor-pointer"
+            >
+              <span className="">✕</span>
+            </button>
+
+            {/* Prev */}
+            {lightbox.images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lightboxPrev();
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition cursor-pointer"
+              >
+                <span className="text-4xl mb-2 mr-1"> &#8249;</span>
+              </button>
+            )}
+
+            {/* Image */}
+
+            <img
+              src={lightbox.images[lightbox.index]}
+              alt="fullscreen"
+              className="max-h-[90vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+
+            {/* Next */}
+            {lightbox.images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lightboxNext();
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-white/10 hover:bg-white/25 w-12 h-12 flex items-center justify-center rounded-full transition cursor-pointer"
+              >
+                <span className="text-4xl mb-2 "> &#8250;</span>
+              </button>
+            )}
+
+            {/* Dot indicators */}
+            {lightbox.images.length > 1 && (
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+                {lightbox.images.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLightbox((prev) => ({ ...prev, index: i }));
+                    }}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      i === lightbox.index ? "bg-white w-5" : "bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
