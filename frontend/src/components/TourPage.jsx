@@ -8,6 +8,7 @@ import { Footer } from "../components/Footer";
 import { WarningModal } from "./WarningModal";
 import { languageNames } from "../utils/languageNames";
 import { useSwipeable } from "react-swipeable";
+import { TourPageRecommendation } from "./TourPageRecommendation";
 
 export function TourPage() {
   const { t, i18n } = useTranslation();
@@ -533,6 +534,7 @@ export function TourPage() {
           </button>
         </div>
       </div>
+      <TourPageRecommendation currentTour={tourData} />
       <Footer />
 
       {/* Lightbox */}

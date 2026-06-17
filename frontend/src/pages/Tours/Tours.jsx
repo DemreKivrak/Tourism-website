@@ -23,6 +23,8 @@ export function Tours() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [selectedDeparture, setSelectedDeparture] = useState("All");
+  const [departureCities, setDepartureCities] = useState(["All"]);
 
   const languageNames = {
     All: t("tours.allLanguages"),
@@ -54,6 +56,7 @@ export function Tours() {
 
   const resetFilters = () => {
     setSelectedDestination("All");
+    setSelectedDeparture("All");
     setSelectedLanguage("All");
     setSortOrder("newest");
     setSearchQuery("");
@@ -94,6 +97,15 @@ export function Tours() {
         ...new Set(toursData.map((t) => t.language || "tr")),
       ];
       setAvailableLanguages(uniqueLanguages);
+
+      //build departure city list
+      const uniqueDepartureCities = [
+        "All",
+        ...new Set(
+          toursData.map((tour) => tour.departure_city?.trim()).filter(Boolean),
+        ),
+      ];
+      setDepartureCities(uniqueDepartureCities);
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
@@ -106,6 +118,12 @@ export function Tours() {
       const matchesDestination =
         selectedDestination === "All" ||
         (tour.destinations || []).includes(selectedDestination);
+
+      const matchesDeparture =
+        selectedDeparture === "All" ||
+        tour.departure_city?.trim()?.toLowerCase() ===
+          selectedDeparture?.trim()?.toLowerCase();
+
       const matchesLanguage =
         selectedLanguage === "All" ||
         (tour.language || "tr") === selectedLanguage;
@@ -130,7 +148,12 @@ export function Tours() {
           d.toLowerCase().includes(searchQuery.toLowerCase()),
         );
 
-      return matchesDestination && matchesLanguage && matchesSearch;
+      return (
+        matchesDestination &&
+        matchesDeparture &&
+        matchesLanguage &&
+        matchesSearch
+      );
     })
     .sort((a, b) => {
       if (sortOrder === "newest") return b.id - a.id;
@@ -212,10 +235,13 @@ export function Tours() {
             />
           </svg>
           <span>Filter</span>
-          {(selectedDestination !== "All" || selectedLanguage !== "All") && (
+          {(selectedDeparture !== "All" ||
+            selectedDestination !== "All" ||
+            selectedLanguage !== "All") && (
             <span className="bg-blue-500 text-white text-xs rounded-full px-2 py-0.5">
               {
                 [
+                  selectedDeparture !== "All",
                   selectedDestination !== "All",
                   selectedLanguage !== "All",
                 ].filter(Boolean).length
@@ -298,6 +324,57 @@ export function Tours() {
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
+
+          {/* Departure Dropdown */}
+          <div className="relative flex-1">
+            <button
+              onClick={() =>
+                setOpenDropdown(
+                  openDropdown === "departure" ? null : "departure",
+                )
+              }
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm text-gray-700 font-medium flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer"
+            >
+              <span>
+                {selectedDeparture === "All"
+                  ? t("tours.allDepartures")
+                  : selectedDeparture}
+              </span>
+              <svg
+                className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${openDropdown === "departure" ? "rotate-180" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {openDropdown === "departure" && (
+              <div
+                className="absolute z-50 top-full mt-1 w-full bg-white border border-gray-200 shadow-lg"
+                style={{ maxHeight: "240px", overflowY: "auto" }}
+              >
+                {departureCities.map((city) => (
+                  <div
+                    key={city}
+                    onClick={() => {
+                      setSelectedDeparture(city);
+                      setOpenDropdown(null);
+                    }}
+                    className={`px-4 py-2.5 cursor-pointer hover:bg-amber-50 text-gray-700 transition-colors ${selectedDeparture === city ? "bg-amber-50 font-semibold text-amber-600" : ""}`}
+                  >
+                    {city === "All" ? "All" : city}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Destination Dropdown */}
@@ -597,7 +674,53 @@ export function Tours() {
                 )}
               </div>
 
-              {/* Destination */}
+              {/* Departure */}
+              <div className="mb-4">
+                <button
+                  onClick={() =>
+                    setOpenDropdown(
+                      openDropdown === "mob-departure" ? null : "mob-departure",
+                    )
+                  }
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium flex justify-between items-center"
+                >
+                  <span>
+                    {selectedDeparture === "All"
+                      ? t("tours.allDepartures")
+                      : selectedDeparture}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${openDropdown === "mob-departure" ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {openDropdown === "mob-departure" && (
+                  <div className="border border-gray-200 rounded-xl mt-1 overflow-hidden">
+                    {departureCities.map((city) => (
+                      <div
+                        key={city}
+                        onClick={() => {
+                          setSelectedDeparture(city);
+                          setOpenDropdown(null);
+                        }}
+                        className={`px-4 py-2.5 cursor-pointer hover:bg-amber-50 text-gray-700 ${selectedDeparture === city ? "bg-amber-50 font-semibold text-amber-600" : ""}`}
+                      >
+                        {city === "All" ? "All" : city}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <div className="mb-4">
                 <button
                   onClick={() =>
