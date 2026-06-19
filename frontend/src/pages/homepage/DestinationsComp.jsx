@@ -134,7 +134,7 @@ export function DestinationsComp() {
             {destinations.map((dest, i) => (
               <div
                 key={i}
-                onClick={() => navigate(`/destinations#${dest.id}`)}
+                onClick={() => navigate(`/destinations/${dest.id}`)}
                 className="group relative flex-shrink-0 w-[280px] md:w-[240px] md:w-[calc(33.333%-1rem)] overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 snap-center"
               >
                 {/* Image Container */}
