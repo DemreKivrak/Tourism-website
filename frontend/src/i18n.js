@@ -242,6 +242,14 @@ const resources = {
       "common.seeMore": "See More",
       "common.loading": "Loading...",
       "common.error": "Error",
+
+      // Custom Tour
+      "customTour.cantFind": "CANNOT FIND THE TOUR FOR YOU?",
+      "customTour.cantFindDesc":
+        "Contact Us For a Custom Tailored Tour Program Made Just For You",
+      "customTour.reachUs":
+        "REACH US NOW TO CREATE YOUR OWN CUSTOM TOUR PROGRAM",
+      "customTour.contact": "CONTACT",
       "whatsapp.contactUs": "Contact us",
     },
   },
@@ -484,6 +492,14 @@ const resources = {
       "common.seeMore": "Daha Fazla Gör",
       "common.loading": "Yükleniyor...",
       "common.error": "Hata",
+
+      // Custom Tour
+      "customTour.cantFind": "SİZİN İÇİN UYGUN TUR BULAMADI MISINIZ?",
+      "customTour.cantFindDesc":
+        "Sizin İçin Özel Olarak Hazırlanmış Tur Programı İçin Bizimle İletişime Geçin",
+      "customTour.reachUs":
+        "KENDİ ÖZELLEŞTİRİLMİŞ TUR PROGRAMINIZI OLUŞTURMAK İÇİN ŞİMDİ BİZE ULAŞIN",
+      "customTour.contact": "İLETİŞİM",
       "whatsapp.contactUs": "Bize Ulaşın",
     },
   },
@@ -592,6 +608,14 @@ const resources = {
       "about.getInTouch": "Kontakt aufnehmen",
       "services.chooseDescription":
         "Egal ob Sie alleine, mit der Familie oder in einer Gruppe reisen, wir haben das perfekte Fahrzeug für Ihr Türkei-Abenteuer. Alle Fahrzeuge sind gut gewartet, versichert und für Ihre Reise bereit. Zu jeder Buchung ist ein professioneller Fahrer inbegriffen.",
+
+      // Custom Tour
+      "customTour.cantFind": "KÖNNEN SIE DIE TOUR FÜR SIE NICHT FINDEN?",
+      "customTour.cantFindDesc":
+        "Kontaktieren Sie uns für ein maßgeschneidertes Tourprogramm, das speziell für Sie erstellt wurde",
+      "customTour.reachUs":
+        "ERREICHEN SIE UNS JETZT, UM IHR EIGENES MASSGESCHNEIDERTES TOURPROGRAMM ZU ERSTELLEN",
+      "customTour.contact": "KONTAKT",
       "whatsapp.contactUs": "Kontaktieren Sie uns",
     },
   },
@@ -699,6 +723,14 @@ const resources = {
       "about.getInTouch": "Nous contacter",
       "services.chooseDescription":
         "Que vous voyagiez seul, en famille ou en groupe, nous avons le véhicule parfait pour votre aventure turque. Tous les véhicules sont bien entretenus, assurés et prêts pour votre voyage. Un chauffeur professionnel est inclus dans chaque réservation.",
+
+      // Custom Tour
+      "customTour.cantFind": "VOUS NE TROUVEZ PAS LE VOYAGE POUR VOUS?",
+      "customTour.cantFindDesc":
+        "Contactez-nous pour un programme touristique personnalisé créé spécialement pour vous",
+      "customTour.reachUs":
+        "CONTACTEZ-NOUS MAINTENANT POUR CRÉER VOTRE PROPRE PROGRAMME TOURISTIQUE PERSONNALISÉ",
+      "customTour.contact": "CONTACTER",
       "whatsapp.contactUs": "Contactez-nous",
     },
   },
@@ -806,6 +838,14 @@ const resources = {
       "about.getInTouch": "Ponerse en contacto",
       "services.chooseDescription":
         "Ya sea que viaje solo, con familia o en grupo, tenemos el vehículo perfecto para su aventura turca. Todos los vehículos están bien mantenidos, asegurados y listos para su viaje. Se incluirá un conductor profesional en cada reserva.",
+
+      // Custom Tour
+      "customTour.cantFind": "¿NO ENCUENTRA EL TOUR PARA USTED?",
+      "customTour.cantFindDesc":
+        "Contáctenos para un programa de tour personalizado hecho especialmente para usted",
+      "customTour.reachUs":
+        "CONTÁCTENOS AHORA PARA CREAR SU PROPIO PROGRAMA DE TOUR PERSONALIZADO",
+      "customTour.contact": "CONTACTO",
       "whatsapp.contactUs": "Contáctenos",
     },
   },
@@ -912,6 +952,14 @@ const resources = {
       "about.getInTouch": "Связаться с нами",
       "services.chooseDescription":
         "Путешествуете ли вы в одиночку, с семьёй или в группе, у нас есть идеальный автомобиль для вашего турецкого приключения. Все автомобили хорошо обслуживаются, застрахованы и готовы к вашему путешествию. К каждому бронированию прилагается профессиональный водитель.",
+
+      // Custom Tour
+      "customTour.cantFind": "НЕ МОЖЕТЕ НАЙТИ ТУР ДЛЯ СЕБЯ?",
+      "customTour.cantFindDesc":
+        "Свяжитесь с нами для получения специально разработанного программы тура, созданной специально для вас",
+      "customTour.reachUs":
+        "СВЯЖИТЕСЬ С НАМИ СЕЙЧАС, ЧТОБЫ СОЗДАТЬ СВОЮ СОБСТВЕННУЮ ИНДИВИДУАЛЬНУЮ ПРОГРАММУ ТУРА",
+      "customTour.contact": "КОНТАКТ",
       "whatsapp.contactUs": "Свяжитесь с нами",
     },
   },
@@ -1019,6 +1067,14 @@ const resources = {
       "about.getInTouch": "お問い合わせ",
       "services.chooseDescription":
         "一人旅でも、家族連れでも、グループでも、トルコの冒険に最適な車両をご用意しています。すべての車両は整備が行き届き、保険付きで、旅の準備が整っています。すべての予約にプロのドライバーが含まれます。",
+
+      // Custom Tour
+      "customTour.cantFind": "あなたにぴったりのツアーが見つかりません？",
+      "customTour.cantFindDesc":
+        "あなたのために特別に設計されたカスタマイズされたツアープログラムについては、お問い合わせください",
+      "customTour.reachUs":
+        "今すぐご連絡ください。独自のカスタマイズされたツアープログラムを作成します",
+      "customTour.contact": "お問い合わせ",
       "whatsapp.contactUs": "お問い合わせ",
     },
   },

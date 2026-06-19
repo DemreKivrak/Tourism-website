@@ -185,7 +185,7 @@ export function Tours() {
       {/* Hero Section */}
       <div className="relative h-[65vh] md:h-[75vh] w-full overflow-hidden">
         <img
-          src="/homepage-pic.jpg"
+          src="/homepage-comp-1.png"
           alt="Tours"
           className="w-full h-full object-cover"
         />

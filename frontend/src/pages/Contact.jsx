@@ -67,7 +67,7 @@ export function Contact() {
       {/* Hero Section */}
       <div className="relative h-[65vh] md:h-[75vh] w-full overflow-hidden">
         <img
-          src="/homepage-pic-1.jpg"
+          src="/homepage-pic.jpg"
           alt="Tours"
           className="w-full h-full object-cover"
         />

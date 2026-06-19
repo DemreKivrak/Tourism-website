@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "../../services/api";
+import { Link } from "react-router-dom";
 
 export function Recommended() {
   const { t } = useTranslation();
@@ -108,185 +109,209 @@ export function Recommended() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      onMouseEnter={() => clearInterval(intervalRef.current)}
-      onMouseLeave={() => startAutoScroll()}
-      className="py-4 px-4 bg-gradient-to-b from-white to-amber-50/30 overflow-hidden "
-    >
-      <div className="text-center mb-6 relative">
-        <span className="absolute inset-0 flex items-center justify-center text-[8rem] md:text-[12rem] font-black text-gray-100 select-none pointer-events-none leading-none -z-10">
-          02
-        </span>
+    <>
+      <div
+        ref={containerRef}
+        onMouseEnter={() => clearInterval(intervalRef.current)}
+        onMouseLeave={() => startAutoScroll()}
+        className="py-4 px-4 bg-gradient-to-b from-white to-amber-50/30 overflow-hidden "
+      >
+        <div className="text-center mb-6 relative ">
+          <span className="absolute inset-0 flex items-center justify-center text-[8rem] md:text-[12rem] font-black text-gray-100 select-none pointer-events-none leading-none -z-10">
+            02
+          </span>
 
-        <h1 className="text-2xl md:text-5xl font-onest font-bold tracking-tight text-gray-900  leading-relaxed mb-6 justify-self-start ">
-          {t("tours.recommended")}
-        </h1>
-      </div>
-
-      <div className="max-w-7xl mx-auto relative px-2 md:px-0">
-        {/* Sol Ok */}
-        <button
-          onClick={() => scroll("left")}
-          className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-300/50 hover:bg-white/30 p-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
-        >
-          <svg
-            className="w-6 h-6 text-gray-800"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-
-        {/* Scrollable Container */}
-        <div
-          ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-2 py-2 snap-x snap-mandatory "
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {recommended.map((tour, i) => (
-            <div
-              key={i}
-              className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 flex-shrink-0 w-[80vw] max-w-[280px] md:w-[calc(25%-1.125rem)] md:max-w-none snap-center flex flex-col"
-            >
-              {/* Image Container */}
-              <div className="relative h-44 overflow-hidden">
-                <img
-                  src={tour.img}
-                  alt={tour.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-sky-400/80 to-sky-600/80 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
-                  {languageNames[tour.language]}
-                </div>
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-
-                {/* Recommended Badge */}
-                <div className="absolute top-4 left-4 bg-gradient-to-r from-green-400 to-green-600/85 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  {t("tours.recommendedBadge")}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-3 flex flex-col flex-1">
-                {/* Duration Badge */}
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="flex items-center gap-1 text-amber-600 bg-amber-50 px-3 py-1 rounded-full text-sm font-medium">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    {tour.info}
-                  </div>
-                </div>
-
-                {/* Tour Name */}
-                <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors duration-300">
-                  {tour.name}
-                </h3>
-
-                {/* Features */}
-                <div className="space-y-1 mb-2">
-                  <div className="flex items-center gap-2 text-sm text-gray-600"></div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600 ">
-                    {tour.departure_city && (
-                      <div className="flex mx-auto mb-2">
-                        <svg
-                          className="w-4 h-4 text-blue-500 flex-shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="">
-                          {t("tours.departureFrom")}{" "}
-                          <span className="font-medium">
-                            {tour.departure_city}
-                          </span>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* CTA Button */}
-                <button
-                  onClick={() => navigate(`/tourpage/${tour.id}`)}
-                  className="mt-auto w-4/7 bg-gradient-to-r from-[rgb(36,54,61)] to-[rgb(49,76,88)] text-white py-2 rounded-3xl font-medium  transition-all duration-400 flex items-center justify-center gap-2 shadow-md group-hover:shadow-lg cursor-pointer mx-auto hover:bg-white hover:bg-none hover:text-[rgb(31,37,40)] hover:border-1 "
-                >
-                  <span>{t("tours.viewDetails")}</span>
-                </button>
-              </div>
-
-              {/* Hover Border Effect */}
-              <div className="absolute inset-0 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
-            </div>
-          ))}
+          <h1 className="text-2xl md:text-5xl font-onest font-bold tracking-tight text-gray-900  leading-relaxed mb-6 justify-self-start ">
+            {t("tours.recommended")}
+          </h1>
         </div>
 
-        {/* Sağ Ok */}
-        <button
-          onClick={() => scroll("right")}
-          className="hidden md:block absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-300/50 hover:bg-white/30  p-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
-        >
-          <svg
-            className="w-6 h-6 text-gray-800"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="max-w-7xl mx-auto relative px-2 md:px-0">
+          {/* Sol Ok */}
+          <button
+            onClick={() => scroll("left")}
+            className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-gray-300/50 hover:bg-white/30 p-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+            <svg
+              className="w-6 h-6 text-gray-800"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Scrollable Container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-2 py-2 snap-x snap-mandatory "
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {recommended.map((tour, i) => (
+              <div
+                key={i}
+                className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 flex-shrink-0 w-[80vw] max-w-[280px] md:w-[calc(25%-1.125rem)] md:max-w-none snap-center flex flex-col"
+              >
+                {/* Image Container */}
+                <div className="relative h-44 overflow-hidden">
+                  <img
+                    src={tour.img}
+                    alt={tour.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-sky-400/80 to-sky-600/80 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg z-10">
+                    {languageNames[tour.language]}
+                  </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                  {/* Recommended Badge */}
+                  <div className="absolute top-4 left-4 bg-gradient-to-r from-green-400 to-green-600/85 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {t("tours.recommendedBadge")}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-3 flex flex-col flex-1">
+                  {/* Duration Badge */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-1 text-amber-600 bg-amber-50 px-3 py-1 rounded-full text-sm font-medium">
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {tour.info}
+                    </div>
+                  </div>
+
+                  {/* Tour Name */}
+                  <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-gray-800 transition-colors duration-300">
+                    {tour.name}
+                  </h3>
+
+                  {/* Features */}
+                  <div className="space-y-1 mb-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-600"></div>
+                    <div className="flex items-center gap-2 text-sm text-gray-600 ">
+                      {tour.departure_city && (
+                        <div className="flex mx-auto mb-2">
+                          <svg
+                            className="w-4 h-4 text-blue-500 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          <span className="">
+                            {t("tours.departureFrom")}{" "}
+                            <span className="font-medium">
+                              {tour.departure_city}
+                            </span>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
+                  <button
+                    onClick={() => navigate(`/tourpage/${tour.id}`)}
+                    className="mt-auto w-4/7 bg-gradient-to-r from-[rgb(36,54,61)] to-[rgb(49,76,88)] text-white py-2 rounded-3xl font-medium  transition-all duration-400 flex items-center justify-center gap-2 shadow-md group-hover:shadow-lg cursor-pointer mx-auto hover:bg-white hover:bg-none hover:text-[rgb(31,37,40)] hover:border-1 "
+                  >
+                    <span>{t("tours.viewDetails")}</span>
+                  </button>
+                </div>
+
+                {/* Hover Border Effect */}
+                <div className="absolute inset-0 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Sağ Ok */}
+          <button
+            onClick={() => scroll("right")}
+            className="hidden md:block absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-300/50 hover:bg-white/30  p-3 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer"
+          >
+            <svg
+              className="w-6 h-6 text-gray-800"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Custom CSS to hide scrollbar */}
+        <style jsx>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
       </div>
 
-      {/* Custom CSS to hide scrollbar */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-    </div>
+      {/*All Tours Button */}
+      <Link to={"/tours"}>
+        <div className="flex justify-self-center ">
+          <h2 className="text-l md:text-xl font-onest font-medium tracking-tight ml-auto text-[rgb(25,32,36)]  ">
+            View All Tours
+          </h2>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            className=" ml-2 text-[rgb(25,32,36)] text-l md:text-xl "
+          >
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </div>
+      </Link>
+    </>
   );
 }
